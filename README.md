@@ -96,17 +96,20 @@ cp -R sci-plot/skills/sci-plot "$HOME/.agents/skills/sci-plot"
     <td width="33%" valign="top">
       <a href="skills/sci-plot/assets/cases/rf-0104.webp"><img src="skills/sci-plot/assets/cases/rf-0104.webp" width="100%" alt="五个地区的年龄半云分布，叠加箱线、原始散点和样本量"></a><br>
       <strong><code>rf-0104</code> 让分布与原始观测同场</strong><br>
-      <sub>Core · Distribution + raw observations<br><strong>B · CONDITIONAL</strong></sub>
+      Core · Distribution + raw observations<br>
+      <strong>Status: B · CONDITIONAL</strong>
     </td>
     <td width="33%" valign="top">
       <a href="skills/sci-plot/assets/cases/rf-0173.webp"><img src="skills/sci-plot/assets/cases/rf-0173.webp" width="100%" alt="患者指标的配对连线、总体分布与多重比较复合图"></a><br>
       <strong><code>rf-0173</code> 保留每个对象的配对变化</strong><br>
-      <sub>Core · Paired change + missingness<br><strong>C · REFERENCE ONLY</strong></sub>
+      Core · Paired change + missingness<br>
+      <strong>Status: C · REFERENCE ONLY</strong>
     </td>
     <td width="33%" valign="top">
       <a href="skills/sci-plot/assets/cases/rf-0088.webp"><img src="skills/sci-plot/assets/cases/rf-0088.webp" width="100%" alt="逐行对齐样本量、风险比、置信区间和 P 值的 Cox 森林表"></a><br>
       <strong><code>rf-0088</code> 对齐效应量、区间与变量</strong><br>
-      <sub>Core · Effect estimates + covariate table<br><strong>B · CONDITIONAL</strong></sub>
+      Core · Effect estimates + covariate table<br>
+      <strong>Status: B · CONDITIONAL</strong>
     </td>
   </tr>
 </table>
@@ -118,17 +121,20 @@ cp -R sci-plot/skills/sci-plot "$HOME/.agents/skills/sci-plot"
     <td width="33%" valign="top">
       <a href="skills/sci-plot/assets/cases/rf-0178.webp"><img src="skills/sci-plot/assets/cases/rf-0178.webp" width="100%" alt="双对数散点和回归线，配合边缘分布与分组残差诊断"></a><br>
       <strong><code>rf-0178</code> 让拟合与残差共同作证</strong><br>
-      <sub>Core · Fit + marginals + diagnostics<br><strong>A · AUDITED</strong></sub>
+      Core · Fit + marginals + diagnostics<br>
+      <strong>Status: A · AUDITED</strong>
     </td>
     <td width="33%" valign="top">
       <a href="skills/sci-plot/assets/cases/rf-0180.webp"><img src="skills/sci-plot/assets/cases/rf-0180.webp" width="100%" alt="按类别编码的二维散点，同时显示横纵非对称误差棒"></a><br>
       <strong><code>rf-0180</code> 保留双轴非对称不确定性</strong><br>
-      <sub>Core · Bivariate measurement uncertainty<br><strong>B · CONDITIONAL</strong></sub>
+      Core · Bivariate measurement uncertainty<br>
+      <strong>Status: B · CONDITIONAL</strong>
     </td>
     <td width="33%" valign="top">
       <a href="skills/sci-plot/assets/cases/rf-0102.webp"><img src="skills/sci-plot/assets/cases/rf-0102.webp" width="100%" alt="下三角相关热图、层次聚类树与变量分组色带"></a><br>
       <strong><code>rf-0102</code> 绑定相关结构与聚类决策</strong><br>
-      <sub>Core · Correlation + hierarchical clustering<br><strong>B · CONDITIONAL</strong></sub>
+      Core · Correlation + hierarchical clustering<br>
+      <strong>Status: B · CONDITIONAL</strong>
     </td>
   </tr>
 </table>
@@ -140,17 +146,20 @@ cp -R sci-plot/skills/sci-plot "$HOME/.agents/skills/sci-plot"
     <td width="33%" valign="top">
       <a href="skills/sci-plot/assets/cases/rf-0018.webp"><img src="skills/sci-plot/assets/cases/rf-0018.webp" width="100%" alt="Kaplan–Meier 生存曲线、删失标记、效应估计和在险人数表"></a><br>
       <strong><code>rf-0018</code> 联读生存、删失与在险人数</strong><br>
-      <sub>Core · Survival + censoring + risk table<br><strong>A · AUDITED</strong></sub>
+      Core · Survival + censoring + risk table<br>
+      <strong>Status: A · AUDITED</strong>
     </td>
     <td width="33%" valign="top">
       <a href="skills/sci-plot/assets/cases/rf-0061.webp"><img src="skills/sci-plot/assets/cases/rf-0061.webp" width="100%" alt="多个纵向指标小图，叠加个体轨迹、组级趋势和边缘分布"></a><br>
       <strong><code>rf-0061</code> 兼顾个体轨迹与组级趋势</strong><br>
-      <sub>Core · Longitudinal individual + group dynamics<br><strong>B · BACKEND-SPECIFIC</strong></sub>
+      Core · Longitudinal individual + group dynamics<br>
+      <strong>Status: B · BACKEND-SPECIFIC</strong>
     </td>
     <td width="33%" valign="top">
       <a href="skills/sci-plot/assets/cases/rf-0035.webp"><img src="skills/sci-plot/assets/cases/rf-0035.webp" width="100%" alt="患者治疗反应泳道图，以横条和符号呈现随访时长与事件"></a><br>
       <strong><code>rf-0035</code> 沿时间轴呈现对象历程</strong><br>
-      <sub>Extension · Timelines + discrete events<br><strong>B · CONDITIONAL</strong></sub>
+      Extension · Timelines + discrete events<br>
+      <strong>Status: B · CONDITIONAL</strong>
     </td>
   </tr>
 </table>
@@ -162,17 +171,20 @@ cp -R sci-plot/skills/sci-plot "$HOME/.agents/skills/sci-plot"
     <td width="33%" valign="top">
       <a href="skills/sci-plot/assets/cases/rf-0001.webp"><img src="skills/sci-plot/assets/cases/rf-0001.webp" width="100%" alt="多个样本在四个时间点的百分比组成堆积柱图"></a><br>
       <strong><code>rf-0001</code> 在共同分母下比较组成</strong><br>
-      <sub>Core · Composition under a common denominator<br><strong>A · AUDITED</strong></sub>
+      Core · Composition under a common denominator<br>
+      <strong>Status: A · AUDITED</strong>
     </td>
     <td width="33%" valign="top">
       <a href="skills/sci-plot/assets/cases/rf-0157.webp"><img src="skills/sci-plot/assets/cases/rf-0157.webp" width="100%" alt="两个研究的 UpSet 图，对齐精确交集大小、集合规模和组合点阵"></a><br>
       <strong><code>rf-0157</code> 区分精确交集与集合规模</strong><br>
-      <sub>Core · Exact intersections + set sizes<br><strong>C · REFERENCE ONLY</strong></sub>
+      Core · Exact intersections + set sizes<br>
+      <strong>Status: C · REFERENCE ONLY</strong>
     </td>
     <td width="33%" valign="top">
       <a href="skills/sci-plot/assets/cases/rf-0118.webp"><img src="skills/sci-plot/assets/cases/rf-0118.webp" width="100%" alt="两套独立的多阶段冲积流图，以流带宽度表达记录数或权重"></a><br>
       <strong><code>rf-0118</code> 明确多阶段流带的带宽语义</strong><br>
-      <sub>Extension · Multi-stage flow + width semantics<br><strong>B · NEEDS REVIEW</strong></sub>
+      Extension · Multi-stage flow + width semantics<br>
+      <strong>Status: B · NEEDS REVIEW</strong>
     </td>
   </tr>
 </table>
@@ -184,17 +196,20 @@ cp -R sci-plot/skills/sci-plot "$HOME/.agents/skills/sci-plot"
     <td width="33%" valign="top">
       <a href="skills/sci-plot/assets/cases/rf-0107.webp"><img src="skills/sci-plot/assets/cases/rf-0107.webp" width="100%" alt="差异表达火山图与通路富集曲线组成的多层证据链"></a><br>
       <strong><code>rf-0107</code> 连接特征差异与通路富集</strong><br>
-      <sub>Core · Feature differences → pathway enrichment<br><strong>B · CONDITIONAL</strong></sub>
+      Core · Feature differences → pathway enrichment<br>
+      <strong>Status: B · CONDITIONAL</strong>
     </td>
     <td width="33%" valign="top">
       <a href="skills/sci-plot/assets/cases/rf-0054.webp"><img src="skills/sci-plot/assets/cases/rf-0054.webp" width="100%" alt="按簇对齐趋势轮廓、表达热图、代表基因和功能富集的复合图"></a><br>
       <strong><code>rf-0054</code> 对齐模块模式与功能注释</strong><br>
-      <sub>Extension · Cluster pattern + functional annotation<br><strong>B · UPSTREAM-FROZEN</strong></sub>
+      Extension · Cluster pattern + functional annotation<br>
+      <strong>Status: B · UPSTREAM-FROZEN</strong>
     </td>
     <td width="33%" valign="top">
       <a href="skills/sci-plot/assets/cases/rf-0176.webp"><img src="skills/sci-plot/assets/cases/rf-0176.webp" width="100%" alt="十类 T 细胞的高密度预计算 UMAP 点云及亚型计数"></a><br>
       <strong><code>rf-0176</code> 只展示已计算的低维坐标</strong><br>
-      <sub>Extension · Precomputed embedding<br><strong>B · DISPLAY-ONLY</strong></sub>
+      Extension · Precomputed embedding<br>
+      <strong>Status: B · DISPLAY-ONLY</strong>
     </td>
   </tr>
 </table>
@@ -206,17 +221,20 @@ cp -R sci-plot/skills/sci-plot "$HOME/.agents/skills/sci-plot"
     <td width="33%" valign="top">
       <a href="skills/sci-plot/assets/cases/rf-0109.webp"><img src="skills/sci-plot/assets/cases/rf-0109.webp" width="100%" alt="多种方法的基准矩阵，对齐排名、指标分数、配置和缺失标记"></a><br>
       <strong><code>rf-0109</code> 让排名、分数与缺失对齐</strong><br>
-      <sub>Core · Ranking + scores + missingness + settings<br><strong>A · AUDITED</strong></sub>
+      Core · Ranking + scores + missingness + settings<br>
+      <strong>Status: A · AUDITED</strong>
     </td>
     <td width="33%" valign="top">
       <a href="skills/sci-plot/assets/cases/rf-0063.webp"><img src="skills/sci-plot/assets/cases/rf-0063.webp" width="100%" alt="共享患者顺序的多条临床轨道，对齐分期、负荷、吸烟和亚型等信息"></a><br>
       <strong><code>rf-0063</code> 让临床轨道共享患者顺序</strong><br>
-      <sub>Extension · Patient-aligned heterogeneous tracks<br><strong>B · CONDITIONAL</strong></sub>
+      Extension · Patient-aligned heterogeneous tracks<br>
+      <strong>Status: B · CONDITIONAL</strong>
     </td>
     <td width="33%" valign="top">
       <a href="skills/sci-plot/assets/cases/rf-0159.webp"><img src="skills/sci-plot/assets/cases/rf-0159.webp" width="100%" alt="中国空间证据双地图，以采样点气泡和城市级分级设色表达差异"></a><br>
       <strong><code>rf-0159</code> 以空间契约约束地图表达</strong><br>
-      <sub>Extension · CRS + boundary version + spatial values<br><strong>B · SPATIAL-CONTRACT</strong></sub>
+      Extension · CRS + boundary version + spatial values<br>
+      <strong>Status: B · SPATIAL-CONTRACT</strong>
     </td>
   </tr>
 </table>
