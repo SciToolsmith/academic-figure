@@ -1,0 +1,49 @@
+name: Validate SciPlot
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install validation dependency
+        run: python -m pip install --disable-pip-version-check pyyaml
+
+      - name: Validate skill metadata
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import yaml
+
+          skill_file = Path("skills/sci-plot/SKILL.md")
+          text = skill_file.read_text(encoding="utf-8")
+          parts = text.split("---", 2)
+          assert len(parts) == 3 and not parts[0].strip(), "Missing YAML frontmatter"
+          metadata = yaml.safe_load(parts[1])
+          assert metadata["name"] == "sci-plot"
+          assert isinstance(metadata.get("description"), str) and metadata["description"].strip()
+          print("skill metadata: valid")
+          PY
+
+      - name: Compile Python helpers
+        run: python -m compileall -q skills/sci-plot/scripts
+
+      - name: Validate case index and assets
+        run: python skills/sci-plot/scripts/rank_cases.py --validate-only
+
+      - name: Validate example Figure Contract
+        run: |
+          python skills/sci-plot/scripts/validate_contract.py \
+            skills/sci-plot/references/figure-contract.example.json \
+            --pretty
