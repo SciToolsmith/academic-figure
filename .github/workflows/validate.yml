@@ -17,8 +17,8 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install validation dependency
-        run: python -m pip install --disable-pip-version-check pyyaml
+      - name: Install validation dependencies
+        run: python -m pip install --disable-pip-version-check pyyaml matplotlib
 
       - name: Validate skill metadata
         run: |
@@ -33,17 +33,133 @@ jobs:
           metadata = yaml.safe_load(parts[1])
           assert metadata["name"] == "sci-plot"
           assert isinstance(metadata.get("description"), str) and metadata["description"].strip()
+
+          agent = yaml.safe_load(
+              Path("skills/sci-plot/agents/openai.yaml").read_text(encoding="utf-8")
+          )["interface"]
+          assert agent["display_name"] == "SciPlot｜科研绘图"
+          assert 25 <= len(agent["short_description"]) <= 64
+          assert "$sci-plot" in agent["default_prompt"]
           print("skill metadata: valid")
           PY
 
+      - name: Reject platform junk
+        run: |
+          test -z "$(find skills/sci-plot -name .DS_Store -print)"
+
       - name: Compile Python helpers
-        run: python -m compileall -q skills/sci-plot/scripts
+        run: |
+          python -m compileall -q skills/sci-plot/scripts
+          python -m compileall -q skills/sci-plot/assets/case-packs
+          python -m compileall -q skills/sci-plot/implementations
+
+      - name: Run regression tests
+        run: python -m unittest discover -s skills/sci-plot/tests -v
+
+      - name: Check vocabulary drift
+        run: python skills/sci-plot/scripts/check_vocab_drift.py --pretty
 
       - name: Validate case index and assets
-        run: python skills/sci-plot/scripts/rank_cases.py --validate-only
+        run: |
+          python skills/sci-plot/scripts/rank_cases.py --validate-only
+          python skills/sci-plot/scripts/stage_case.py --validate-only
 
-      - name: Validate example Figure Contract
+      - name: Validate native implementations
+        run: python skills/sci-plot/scripts/validate_implementations.py --pretty
+
+      - name: Validate example Figure Contract gates
         run: |
           python skills/sci-plot/scripts/validate_contract.py \
             skills/sci-plot/references/figure-contract.example.json \
+            --stage plan \
             --pretty
+          python skills/sci-plot/scripts/validate_contract.py \
+            skills/sci-plot/references/figure-contract.example.json \
+            --stage pre-render \
+            --pretty
+          python skills/sci-plot/scripts/validate_contract.py \
+            skills/sci-plot/references/figure-contract.descriptive-composition.example.json \
+            --stage final \
+            --pretty
+
+      - name: Render and inspect a live native smoke bundle
+        env:
+          MPLBACKEND: Agg
+          MPLCONFIGDIR: ${{ runner.temp }}/matplotlib
+          SCIPLOT_CI_ROOT: ${{ runner.temp }}/sciplot-live-smoke
+        run: |
+          set -euo pipefail
+
+          output_dir="$SCIPLOT_CI_ROOT/render"
+          report_dir="$SCIPLOT_CI_ROOT/reports"
+          implementation="skills/sci-plot/implementations/python/composition-bars-v1"
+          contract="skills/sci-plot/references/figure-contract.descriptive-composition.example.json"
+
+          mkdir -p "$output_dir" "$report_dir"
+
+          python "$implementation/render.py" \
+            --input "$implementation/examples/demo.csv" \
+            --data-manifest "$implementation/examples/demo-data.json" \
+            --figure-contract "$contract" \
+            --output-dir "$output_dir" \
+            --run-mode smoke \
+            --value-mode proportion \
+            --facet-order "Day 0,Day 7" \
+            --category-order "Alpha,Beta,Gamma,Other" \
+            --formats "svg,pdf,png" \
+            --width-mm 183 \
+            --height-mm 105 \
+            --dpi 300
+
+          python skills/sci-plot/scripts/validate_contract.py \
+            "$contract" \
+            --stage final \
+            --pretty > "$report_dir/contract.json"
+
+          python skills/sci-plot/scripts/validate_delivery.py \
+            --contract "$contract" \
+            --manifest "$output_dir/composition.manifest.json" \
+            --artifact-dir "$output_dir" \
+            --pretty \
+            --output "$report_dir/delivery.json"
+
+          python skills/sci-plot/scripts/inspect_artifacts.py \
+            "$output_dir/composition.svg" \
+            "$output_dir/composition.pdf" \
+            "$output_dir/composition.png" \
+            --width-mm 183 \
+            --height-mm 105 \
+            --dpi 300 \
+            --require-svg-text \
+            --strict \
+            --pretty \
+            --output "$report_dir/artifacts.json"
+
+          python skills/sci-plot/scripts/build_qa_report.py \
+            "$report_dir/contract.json" \
+            "$report_dir/delivery.json" \
+            "$output_dir/data-validation.json" \
+            "$report_dir/artifacts.json" \
+            --pretty \
+            --output "$report_dir/qa.json"
+
+          python - "$report_dir/qa.json" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          report = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+          non_pass = [
+              check
+              for check in report.get("checks", [])
+              if check.get("status") != "PASS"
+          ]
+          assert report.get("status") == "PASS", report
+          assert not non_pass, non_pass
+          print(
+              json.dumps(
+                  {"status": report["status"], "summary": report["summary"]},
+                  indent=2,
+              )
+          )
+          PY

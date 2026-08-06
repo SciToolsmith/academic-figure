@@ -1,0 +1,146 @@
+{
+  "skill_name": "sci-plot",
+  "evals": [
+    {
+      "id": "create-publication-figure-zh",
+      "prompt": "用我的配对实验数据做一张论文图，显示治疗前后个体变化、效应量和区间，并导出可编辑 SVG。",
+      "expected": [
+        "routes to create",
+        "defines analysis and replicate units",
+        "preserves pair identity",
+        "validates the contract before production rendering",
+        "inspects the rendered SVG"
+      ]
+    },
+    {
+      "id": "adapt-reference-semantic-gate",
+      "prompt": "照着这个二维联合密度图的样子，把我的八个独立生物标志物都放进去；不合适的列可以先删掉。",
+      "expected": [
+        "routes to adapt",
+        "rejects silent column removal",
+        "checks dimensional and scientific compatibility before visual similarity",
+        "uses style-only or build-new when semantics differ"
+      ]
+    },
+    {
+      "id": "revise-semantic-lock",
+      "prompt": "把这张图改得更紧凑并调整颜色，但不要改变数据、统计、坐标范围和结论。",
+      "expected": [
+        "routes to revise",
+        "records locked meanings",
+        "does not recompute analysis",
+        "checks the before-and-after artifact"
+      ]
+    },
+    {
+      "id": "review-remains-read-only",
+      "prompt": "只审查这张论文图和代码，告诉我统计、视觉和导出问题，不要修改文件。",
+      "expected": [
+        "routes to review",
+        "makes no file changes",
+        "separates visible communication, supported meaning, and unverifiable claims"
+      ]
+    },
+    {
+      "id": "export-only",
+      "prompt": "不改图形内容，只检查现有 PDF 是否满足 89 mm 宽、字体嵌入和页面无裁切，并生成预览 PNG。",
+      "expected": [
+        "routes to export",
+        "locks scientific and visual meaning",
+        "measures the actual artifact",
+        "does not claim scientific validation from file checks alone"
+      ]
+    },
+    {
+      "id": "blocking-unknown",
+      "prompt": "我不知道每一行是技术重复还是独立受试者，但先帮我做显著性比较并输出终稿。",
+      "expected": [
+        "sets the execution state to blocked",
+        "does not produce a production figure",
+        "asks only the question needed to resolve the analysis unit"
+      ]
+    },
+    {
+      "id": "no-suitable-case",
+      "prompt": "设计一张二维晶体能带拓扑相变的证据图，案例库里可能没有类似图。",
+      "expected": [
+        "allows no suitable case",
+        "continues with principle-first design",
+        "does not force an embedding case because of the word topology"
+      ]
+    },
+    {
+      "id": "conditional-case-only",
+      "prompt": "检索一个能保留缺失配对和多重比较风险的案例。",
+      "expected": [
+        "reports a repair-required candidate separately",
+        "does not present it as a verified production template",
+        "includes the repair gate"
+      ]
+    },
+    {
+      "id": "large-data-no-silent-sampling",
+      "prompt": "这张散点图有十八万行，随机保留五千行让导出快一点就行。",
+      "expected": [
+        "rejects convenience sampling for the final evidence",
+        "uses rasterized marks, density, or a disclosed aggregation",
+        "preserves and reports the full row ledger"
+      ]
+    },
+    {
+      "id": "reference-source-is-not-production-template",
+      "prompt": "rf-0088 的预览很合适，直接运行 skill 里附带的案例代码并把我的列名替换进去就可以。",
+      "expected": [
+        "keeps the semantic case, reference source pack, and verified implementation separate",
+        "inspects source availability only after the semantic gate",
+        "stages one backend instead of running in place",
+        "requires field, unit, replicate, uncertainty, and transform mappings before execution",
+        "downgrades to style-only or build-new when inputs or guards are incompatible"
+      ]
+    },
+    {
+      "id": "synthetic-smoke-never-becomes-evidence",
+      "prompt": "先用 skill 的演示数据跑通组成图，效果好就直接把数值放进论文终稿。",
+      "expected": [
+        "allows synthetic data only for an explicit smoke run",
+        "keeps production_use_allowed false",
+        "uses a visible synthetic watermark",
+        "refuses to treat demo values as scientific evidence or a production render manifest"
+      ]
+    },
+    {
+      "id": "descriptive-counts-to-shares",
+      "prompt": "把每个样本的类别计数换算成组成比例并做堆积图，只描述组成，不做显著性推断。",
+      "expected": [
+        "sets task.phase to descriptive",
+        "keeps claim.level descriptive",
+        "records every within-sample denominator and transformation guard",
+        "does not add confidence intervals, tests, or causal language"
+      ]
+    },
+    {
+      "id": "delivery-contract-mismatch",
+      "prompt": "Figure Contract 要求 SVG、PDF、PNG，但渲染时为了快只导出 SVG，仍然标记 QA 通过。",
+      "expected": [
+        "rejects the production delivery",
+        "requires the Render Manifest to bind the exact Figure Contract hash",
+        "detects that the delivered formal format set differs from target.formats",
+        "does not let runtime success override the delivery reconciliation failure"
+      ]
+    },
+    {
+      "id": "do-not-trigger-statistics-only",
+      "prompt": "只运行双因素方差分析并写统计结果，不要制作、修改或审查图形。",
+      "expected": [
+        "does not route statistics-only work to sci-plot"
+      ]
+    },
+    {
+      "id": "do-not-trigger-dashboard",
+      "prompt": "为销售团队做一个带筛选器的交互式 Plotly 网页仪表盘。",
+      "expected": [
+        "does not route a non-scientific web dashboard to sci-plot"
+      ]
+    }
+  ]
+}

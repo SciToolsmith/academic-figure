@@ -46,6 +46,17 @@ Record:
 Do not auto-install packages, download unrequested assets, or execute
 unreviewed case scripts.
 
+When a SciPlot-native implementation matches the completed Figure Contract,
+validate its index with `scripts/validate_implementations.py`, inspect its
+manifest, and run it from a task staging directory. A verified runtime does not
+override semantic incompatibility. Reference case packs and native
+implementations are separate layers.
+
+Renderer defaults are not publication requirements. A default height, DPI,
+palette, order, or label policy may be proposed for a prototype, but production
+values must be confirmed or justified in the Figure Contract after the actual
+panel, category, and sample counts are known.
+
 ## Renderer protocol
 
 Keep four layers separate:
@@ -75,6 +86,31 @@ Return nonzero on invalid inputs or missing outputs. Emit an analysis/source
 table, figure artifact, preview, and QA/provenance JSON when applicable.
 Never depend on an absolute path from a case example.
 
+After the renderer succeeds, inspect the exported files rather than inferring
+their properties from plotting arguments:
+
+```bash
+python scripts/inspect_artifacts.py output/figure.svg \
+  --width-mm 180 --height-mm 90 --require-svg-text \
+  --output output/artifact-report.json
+```
+
+For raster deliverables, pass exact pixel dimensions when known. When physical
+dimensions and DPI are both declared, the inspector derives the expected
+pixel dimensions:
+
+```bash
+python scripts/inspect_artifacts.py output/figure.png \
+  --width-mm 180 --height-mm 90 --dpi 300 \
+  --output output/preview-report.json
+```
+
+Merge the artifact result with the Figure Contract validator output through
+`scripts/build_qa_report.py`. Before merging, run
+`scripts/validate_delivery.py` against the Figure Contract, Render Manifest,
+and output directory. Preserve every input report so a reviewer can trace each
+conclusion to its validator.
+
 ## Export contract
 
 Choose formats from the actual delivery need:
@@ -84,9 +120,19 @@ Choose formats from the actual delivery need:
 - raster-only scientific imagery: TIFF/PNG at a justified pixel density;
 - source data and code alongside the figure when requested.
 
+List every formal artifact in Figure Contract `target.formats`.
+`primary_format` names the preferred master and `preview_format` names the
+review convenience artifact; neither field implicitly adds a deliverable. If
+any declared format is PNG or TIFF, record a positive `resolution_dpi` and
+validate the resulting pixel dimensions.
+
 Specify the target physical width and height before layout. Measure the actual
 artifact after export. Avoid export options that silently change the page box
 or crop labels.
+
+Treat absent DPI metadata as unresolved metadata, not proof that the raster was
+rendered at low resolution. Conversely, a correct DPI tag does not compensate
+for insufficient pixels. Check pixel dimensions and metadata independently.
 
 Do not hardcode journal specifications as universal truth. Verify the current
 target-journal instructions when a submission target is named, then record the

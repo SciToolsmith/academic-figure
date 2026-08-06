@@ -1,0 +1,154 @@
+{
+  "contract_version": 1,
+  "task": {
+    "mode": "create",
+    "phase": "descriptive",
+    "profile": "publication",
+    "execution_state": "proceed",
+    "requested_change": null,
+    "meaning_locked": []
+  },
+  "question": {
+    "text": "How do declared category shares vary across samples and facets?",
+    "population_or_system": "the sampled units represented in composition.csv",
+    "comparison_or_exposure": "declared samples and facets",
+    "outcome": "within-sample category share"
+  },
+  "claims": [
+    {
+      "id": "C1",
+      "statement": "The figure describes category shares under each sample's declared denominator.",
+      "level": "descriptive",
+      "status": "supported",
+      "scope": "samples with a complete declared category grid",
+      "not_claimed": "Differences are statistically significant or causal."
+    }
+  ],
+  "evidence": {
+    "primary": ["sample-level category counts converted to shares"],
+    "supporting": [],
+    "controls": [],
+    "diagnostics": ["denominator and closure checks"],
+    "context": []
+  },
+  "panels": [
+    {
+      "id": "a",
+      "question": "What fraction of each sample belongs to each category?",
+      "evidence_role": "primary",
+      "supports_claims": ["C1"],
+      "data_source": "composition.csv",
+      "analysis_unit": "sample within facet",
+      "replicate_unit": "sample",
+      "fields": {
+        "x": "sample",
+        "y": "value",
+        "group": "category",
+        "facet": "facet",
+        "label": null
+      },
+      "quantity_and_units": "share of the declared within-sample count denominator (0–1)",
+      "encoding": {
+        "geometry": "100% stacked bars",
+        "position": "sample on x, within-sample share on y",
+        "color": "one stable color per declared category",
+        "size": "constant bar width",
+        "order": "declared facet, sample, and category orders",
+        "scale_and_limits": "linear zero-to-one composition scale"
+      },
+      "statistics": "not-applicable",
+      "unique_contribution": "preserves each sample while making the common denominator explicit",
+      "known_risks": ["absolute totals are hidden", "missing categories can mimic zero"]
+    }
+  ],
+  "data_integrity": {
+    "expected_rows_or_items": 24,
+    "included_rows_or_items": 24,
+    "exclusions": [],
+    "missingness": "missing category rows are not permitted; known zeros must be explicit",
+    "transformations": [
+      {
+        "operation": "divide each category count by its positive within-sample total",
+        "guard": "all values finite and nonnegative; complete category grid; denominator greater than zero",
+        "output": "plotted_fraction"
+      }
+    ],
+    "aggregation": "input is preaggregated to one row per facet, sample, and category",
+    "sampling": "none",
+    "category_order": {
+      "facet": ["F1", "F2"],
+      "category": ["A", "B", "C", "Other"]
+    },
+    "precomputed_results": []
+  },
+  "traceability": [
+    {
+      "claim_id": "C1",
+      "supported_by_panels": ["a"],
+      "source_fields_or_results": ["facet", "sample", "category", "value", "plotted_fraction"],
+      "limitations": ["relative composition does not show absolute totals"]
+    }
+  ],
+  "visual_system": {
+    "reading_order": "panel a",
+    "emphasis": "sample-level composition under a common denominator",
+    "shared_scales": ["zero-to-one y scale"],
+    "color_semantics": {
+      "category": "stable across every sample and facet"
+    },
+    "accessibility_checks": ["color-vision", "grayscale", "contrast"]
+  },
+  "target": {
+    "audience": "scientific readers",
+    "destination": "manuscript",
+    "width_mm": 183,
+    "height_mm": 105,
+    "formats": ["svg", "pdf", "png"],
+    "primary_format": "svg",
+    "preview_format": "png",
+    "editable_text_required": true,
+    "resolution_dpi": 300
+  },
+  "implementation": {
+    "backend_by_panel": {
+      "a": "python"
+    },
+    "final_assembly_owner": "python",
+    "native_implementation": {
+      "id": "composition-bars-v1",
+      "version": "1.0.0",
+      "supported_task_phase": "descriptive"
+    },
+    "case_influence": {
+      "primary": "rf-0001",
+      "contrast": null,
+      "reuse_level": "style-only",
+      "borrowed_decisions": [
+        "common zero-to-one denominator axis",
+        "stable category colors across facets"
+      ],
+      "retrieval_status": "matched",
+      "audit_status_at_selection": "admitted",
+      "implementation_status_at_selection": "verified",
+      "repair_gate_satisfied": "not-applicable",
+      "decisive_match": ["compositional relationship", "sample-level bars"],
+      "rejected_near_match": null
+    },
+    "random_seed": null
+  },
+  "review_risks": [
+    {
+      "risk": "composition bars hide differences in absolute totals",
+      "affected_claims_or_panels": ["C1", "a"],
+      "mitigation": "limit the claim to relative shares and report totals elsewhere when scientifically relevant",
+      "status": "mitigated"
+    }
+  ],
+  "acceptance": [
+    "every included input row appears once in analysis-table.csv",
+    "all sample shares close to one without silent renormalization",
+    "SVG, PDF, and PNG match the declared physical size and PNG DPI",
+    "the final SVG has editable text and no clipping"
+  ],
+  "unknowns": []
+}

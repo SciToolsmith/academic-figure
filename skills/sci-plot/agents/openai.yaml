@@ -1,4 +1,4 @@
 interface:
   display_name: "SciPlot｜科研绘图"
-  short_description: "从科学问题与数据结构出发，设计、绘制并质检论文级科研图件"
-  default_prompt: "使用 $sci-plot 根据我的科学问题和数据设计一张可审计、可复现的论文图件。"
+  short_description: "从科学问题出发，设计、改进、审查并验证可复现的论文级科研图件"
+  default_prompt: "使用 $sci-plot 创建、改进或审查我的科研图件，并给出可审计的图件与质量报告。"

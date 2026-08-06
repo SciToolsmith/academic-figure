@@ -11,7 +11,7 @@ figure. When nothing matches, continue with
 - [Semantic Distance Gate](#semantic-distance-gate)
 - [Loading budget](#loading-budget)
 - [Reuse levels](#reuse-levels)
-- [Case and implementation status](#case-and-implementation-status)
+- [Catalog status axes](#catalog-status-axes)
 - [Selection record](#selection-record)
 
 ## Retrieval order
@@ -40,7 +40,7 @@ Treat these as hard constraints:
 - uncertainty meaning;
 - whether coordinates, model outputs, or enrichment results are precomputed.
 
-Reject a case when a hard constraint conflicts. Record `no suitable case`
+Reject a case when a hard constraint conflicts. Record `no-suitable-case`
 instead of weakening the user's scientific question, then continue the
 case-independent design workflow.
 
@@ -80,34 +80,92 @@ Choose exactly one level and record it:
 
 Never copy a script merely because its preview looks suitable.
 
-## Case and implementation status
+If code inspection is useful after selection, read
+[case-code.md](case-code.md) and inspect [case-assets.json](case-assets.json).
+Source availability is not a retrieval signal and must never make a
+scientifically weaker case rank higher.
 
-Track two separate states:
+## Catalog status axes
 
-- logical-figure status: `admitted`, `conditional`, `inspiration`,
+Track two orthogonal catalog states:
+
+- `audit_status`: `admitted`, `conditional`, `inspiration`,
   `quarantined`;
-- implementation status: `verified`, `language-specific`,
+- `implementation_status`: `verified`, `language-specific`,
   `static-reviewed`, `failed`, `unreviewed`.
 
+`audit_status` answers whether the scientific expression has passed review.
+`implementation_status` answers what has actually been executed or inspected.
+Neither axis describes how the current task will reuse the case.
+`reuse_level` is selected per task and therefore belongs in the Figure
+Contract, never in the case catalog.
+
+For case entries, `implementation_status` applies to the logical figure at the
+time of the source-project audit. It must not be read as a blanket claim that
+both packaged Python/R entrypoints, unavailable case inputs, and a new field
+mapping are production-verified.
+
+The source-pack `smoke_status` is a third, narrower fact: whether the bundled
+reproduction source was rerun with an explicitly non-production smoke input.
+It neither upgrades `audit_status` nor proves that real input data are bundled.
+
 A folder can contain multiple logical figures. Python and R files with similar
-names are not assumed equivalent. Use a conditional case only after satisfying
-its stated repair gate. Never retrieve a quarantined or failed implementation
-as a production template.
+names are not assumed equivalent. A `conditional` result is
+`repair-required`; satisfy every returned `repair_gate` before treating it as
+a positive production reference. An `inspiration`, `quarantined`, or `failed`
+result is blocked and must carry a `blocked_reason`. Never silently convert a
+repair-required or blocked result into a production template.
+
+The retriever has three distinct outcomes:
+
+- `matched`: at least one eligible candidate is available;
+- `repair-required-only`: semantic candidates exist, but every candidate has
+  an open repair gate;
+- `no-suitable-case`: nothing passes the semantic gate; continue with
+  `build-new`.
+
+Each returned candidate includes structured `match_reasons`, its `card` and
+`asset`, and a `repair_gate` or `blocked_reason` when applicable.
+
+An explicit `--structure`, `--family`, or `--domain` is authoritative over
+query inference. Negated phrases such as “not paired” are not positive hard
+gates. Candidates are ordered by scientific relevance first; audit and
+implementation readiness classify reuse safety and only break semantic ties.
+
+Explicit constraints filter the candidate pool; they do not award relevance
+points. When a query is supplied, a candidate must still cross the semantic
+relevance threshold. Items that satisfy only an explicit constraint are
+returned separately as `constraint_only_candidates` for clarification or
+manual inspection and can never turn `no-suitable-case` into `matched`.
+Localized structure, domain, and transformation terms come from
+[retrieval-lexicon.json](retrieval-lexicon.json); stable contract and catalog
+enums come from [schema-vocabularies.json](schema-vocabularies.json).
+
+`--include-conditional` is an inspection switch, not a readiness override. It
+may place a semantically relevant conditional case in `matches`; the caller
+must still honor `reuse_readiness`, `repair_gate`, and
+`has_production_ready_match`.
 
 ## Selection record
 
 Add this block to the Figure Contract:
 
 ```yaml
-case_selection:
-  primary: rf-xxxx | none
-  contrast: rf-xxxx | none
-  reuse_level: exact | structural | style-only | build-new
-  decisive_match:
-    - analysis_unit
-    - data_relationship
-    - evidence_goal
-  rejected_near_match:
-    id: rf-yyyy
-    reason: ...
+implementation:
+  case_influence:
+    primary: rf-xxxx | null
+    contrast: rf-yyyy | null
+    reuse_level: exact | structural | style-only | build-new
+    borrowed_decisions: []
+    retrieval_status: matched | repair-required-only | no-suitable-case
+    audit_status_at_selection: admitted | conditional | inspiration | quarantined
+    implementation_status_at_selection: verified | language-specific | static-reviewed | failed | unreviewed
+    repair_gate_satisfied: true | false | not-applicable
+    decisive_match:
+      - analysis_unit
+      - data_relationship
+      - evidence_goal
+    rejected_near_match:
+      id: rf-yyyy
+      reason: ...
 ```

@@ -1,0 +1,124 @@
+{
+  "schema_version": "sciplot.implementation/v1",
+  "id": "composition-bars-v1",
+  "version": "1.0.0",
+  "status": "verified",
+  "backend": {
+    "language": "python",
+    "entrypoint": "render.py",
+    "requires": [
+      "Python >= 3.9",
+      "matplotlib >= 3.7"
+    ]
+  },
+  "source": {
+    "category": "sciplot-native",
+    "license": "Apache-2.0",
+    "case_influences": [
+      {
+        "id": "rf-0001",
+        "reuse_level": "style-only",
+        "runtime_dependency_on_case_pack": false,
+        "borrowed_decisions": [
+          "compare compositions under an explicit common denominator",
+          "separate declared facets while preserving sample-level bars"
+        ]
+      }
+    ]
+  },
+  "semantic_signature": {
+    "analysis_unit": "facet plus sample",
+    "relationship": "compositional",
+    "input_structure": "long table",
+    "evidence_goal": "compare category shares while preserving each sample",
+    "supported_task_phases": [
+      "descriptive",
+      "presentation"
+    ],
+    "not_for": [
+      "absolute quantities without a meaningful common denominator",
+      "uncertainty intervals or inferential comparisons",
+      "compositions with structurally missing categories unless zeros are explicit"
+    ]
+  },
+  "input_contract": {
+    "required_roles": [
+      "sample",
+      "facet",
+      "category",
+      "value"
+    ],
+    "unique_key": [
+      "facet",
+      "sample",
+      "category"
+    ],
+    "value_modes": {
+      "proportion": "finite values in [0, 1] whose sample sum is one within tolerance",
+      "counts": "finite nonnegative values with a positive sample total; conversion to shares is recorded"
+    },
+    "missing_category_policy": "fail; represent a known zero explicitly",
+    "nonfinite_policy": "fail",
+    "negative_policy": "fail"
+  },
+  "guards": [
+    "CB-INPUT-01 required and unique columns",
+    "CB-KEY-01 unique facet-sample-category keys",
+    "CB-GRID-01 complete category grid per sample",
+    "CB-VALUE-01 finite and nonnegative values",
+    "CB-DENOM-01 explicit proportion closure or count denominator",
+    "CB-ORDER-01 declared orders exactly cover observed values",
+    "CB-DEMO-01 explicit data role and synthetic watermark"
+  ],
+  "cli_contract": {
+    "required": [
+      "--input",
+      "--data-manifest",
+      "--output-dir",
+      "--run-mode",
+      "--value-mode"
+    ],
+    "production_required": [
+      "--figure-contract"
+    ],
+    "column_bindings": [
+      "--sample-col",
+      "--facet-col",
+      "--category-col",
+      "--value-col"
+    ],
+    "physical_output": [
+      "--width-mm",
+      "--height-mm",
+      "--formats",
+      "--dpi"
+    ]
+  },
+  "outputs": {
+    "basename": "composition",
+    "formats": [
+      "svg",
+      "pdf",
+      "png"
+    ],
+    "analysis_table": "analysis-table.csv",
+    "data_validation": "data-validation.json",
+    "manifest": "composition.manifest.json",
+    "editable_svg_text": true,
+    "silent_tight_crop": false
+  },
+  "verification": {
+    "fixture": "examples/demo.csv",
+    "fixture_manifest": "examples/demo-data.json",
+    "figure_contract": "references/figure-contract.descriptive-composition.example.json",
+    "test_module": "tests/test_implementation_packs.py",
+    "source_sha256": "78976d31848d16cf9da8a1a82cd6abadf1f092e87cb29864a69a8b673ab7ad55",
+    "source_files_sha256": {
+      "render.py": "78976d31848d16cf9da8a1a82cd6abadf1f092e87cb29864a69a8b673ab7ad55",
+      "contract.py": "d1dfbf9f2f674cf14557e16769dcc1100562844d0a5e87977dce5e9856467fc4"
+    },
+    "local_smoke_status": "passed-svg-pdf-png-2026-08-05",
+    "local_smoke_report": "verification/local-smoke.json",
+    "test_command": "python -m unittest tests/test_implementation_packs.py -v"
+  }
+}

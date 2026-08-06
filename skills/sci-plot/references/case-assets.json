@@ -1,0 +1,308 @@
+{
+  "schema_version": "0.1.0",
+  "policy": {
+    "bundled_code": "reference-and-adaptation-template",
+    "bundled_data": false,
+    "execute_from_staged_copy_only": true
+  },
+  "cases": [
+    {
+      "id": "rf-0001",
+      "source_slug": "rf-0001-faceted-stacked-bar",
+      "pack": "assets/case-packs/rf-0001",
+      "entrypoints": {
+        "python": "faceted_stacked_bar.py",
+        "r": "faceted_stacked_bar.R"
+      },
+      "required_inputs": ["faceted_stacked_bar_data.csv"],
+      "input_availability": "synthetic-demo-generator",
+      "render_proof": "assets/cases/rf-0001.webp",
+      "provenance": "user-authored-reproduction",
+      "license": "Apache-2.0",
+      "smoke_status": "python-synthetic-demo-verified"
+    },
+    {
+      "id": "rf-0018",
+      "source_slug": "rf-0018-kaplan-meier",
+      "pack": "assets/case-packs/rf-0018",
+      "entrypoints": {
+        "python": "kaplan_meier.py",
+        "r": "kaplan_meier.R"
+      },
+      "required_inputs": ["kaplan_meier_data.csv"],
+      "input_availability": "not-bundled",
+      "render_proof": "assets/cases/rf-0018.webp",
+      "provenance": "user-authored-reproduction",
+      "license": "Apache-2.0",
+      "smoke_status": "not-rerun-in-skill"
+    },
+    {
+      "id": "rf-0035",
+      "source_slug": "rf-0035-swimmer-plot",
+      "pack": "assets/case-packs/rf-0035",
+      "entrypoints": {
+        "python": "swimmer_plot.py",
+        "r": "swimmer_plot.R"
+      },
+      "required_inputs": ["swimmer_data.xlsx"],
+      "input_availability": "not-bundled",
+      "render_proof": "assets/cases/rf-0035.webp",
+      "provenance": "user-authored-reproduction",
+      "license": "Apache-2.0",
+      "smoke_status": "not-rerun-in-skill"
+    },
+    {
+      "id": "rf-0054",
+      "source_slug": "rf-0054-gene-cluster-enrichment-heatmap",
+      "pack": "assets/case-packs/rf-0054",
+      "entrypoints": {
+        "python": "gene_cluster_enrichment_heatmap.py",
+        "r": "gene_cluster_enrichment_heatmap.R"
+      },
+      "required_inputs": [
+        "embryonic_expression.csv",
+        "enrichment_annotations.csv",
+        "gene_cluster_assignments.csv",
+        "pbmc_cell_metadata.csv",
+        "pbmc_normalized_expression.csv"
+      ],
+      "input_availability": "not-bundled",
+      "render_proof": "assets/cases/rf-0054.webp",
+      "provenance": "user-authored-reproduction",
+      "license": "Apache-2.0",
+      "smoke_status": "not-rerun-in-skill"
+    },
+    {
+      "id": "rf-0061",
+      "source_slug": "rf-0061-immune-time-series",
+      "pack": "assets/case-packs/rf-0061",
+      "entrypoints": {
+        "python": "immune_time_series.py",
+        "r": "immune_time_series.R"
+      },
+      "required_inputs": [
+        "cell_type_colors.csv",
+        "immune_age_profiles.xlsx",
+        "longitudinal_immune_dynamics.xlsx"
+      ],
+      "input_availability": "not-bundled",
+      "render_proof": "assets/cases/rf-0061.webp",
+      "provenance": "user-authored-reproduction",
+      "license": "Apache-2.0",
+      "smoke_status": "not-rerun-in-skill"
+    },
+    {
+      "id": "rf-0063",
+      "source_slug": "rf-0063-clinical-heatmap",
+      "pack": "assets/case-packs/rf-0063",
+      "entrypoints": {
+        "python": "clinical_heatmap.py",
+        "r": "clinical_heatmap.R"
+      },
+      "required_inputs": ["clinical_heatmap_data.tsv"],
+      "input_availability": "not-bundled",
+      "render_proof": "assets/cases/rf-0063.webp",
+      "provenance": "user-authored-reproduction",
+      "license": "Apache-2.0",
+      "smoke_status": "not-rerun-in-skill"
+    },
+    {
+      "id": "rf-0088",
+      "source_slug": "rf-0088-cox-forest-plot",
+      "pack": "assets/case-packs/rf-0088",
+      "entrypoints": {
+        "python": "cox_forest_plot.py",
+        "r": "cox_forest_plot.R"
+      },
+      "required_inputs": ["cox_forest_data.csv"],
+      "input_availability": "not-bundled",
+      "render_proof": "assets/cases/rf-0088.webp",
+      "provenance": "user-authored-reproduction",
+      "license": "Apache-2.0",
+      "smoke_status": "not-rerun-in-skill"
+    },
+    {
+      "id": "rf-0102",
+      "source_slug": "rf-0102-lower-triangular-correlation-heatmap-dendrogram",
+      "pack": "assets/case-packs/rf-0102",
+      "entrypoints": {
+        "python": "triangular_correlation_cluster.py",
+        "r": "triangular_correlation_cluster.R"
+      },
+      "required_inputs": ["data.csv", "group.csv"],
+      "input_availability": "not-bundled",
+      "render_proof": "assets/cases/rf-0102.webp",
+      "provenance": "user-authored-reproduction",
+      "license": "Apache-2.0",
+      "smoke_status": "not-rerun-in-skill"
+    },
+    {
+      "id": "rf-0104",
+      "source_slug": "rf-0104-violin-box-beeswarm-raincloud",
+      "pack": "assets/case-packs/rf-0104",
+      "entrypoints": {
+        "python": "regional_age_raincloud.py",
+        "r": "regional_age_raincloud.R"
+      },
+      "required_inputs": ["data.xlsx"],
+      "input_availability": "not-bundled",
+      "render_proof": "assets/cases/rf-0104.webp",
+      "provenance": "user-authored-reproduction",
+      "license": "Apache-2.0",
+      "smoke_status": "not-rerun-in-skill"
+    },
+    {
+      "id": "rf-0107",
+      "source_slug": "rf-0107-volcano-preranked-gsea-enrichment-scores",
+      "pack": "assets/case-packs/rf-0107",
+      "entrypoints": {
+        "python": "kras_volcano_preranked_gsea.py",
+        "r": "kras_volcano_preranked_gsea.R"
+      },
+      "required_inputs": [
+        "h.all.v2023.2.Hs.symbols.gmt",
+        "science.adk0775_data_s1.csv"
+      ],
+      "input_availability": "not-bundled",
+      "render_proof": "assets/cases/rf-0107.webp",
+      "provenance": "user-authored-reproduction",
+      "license": "Apache-2.0",
+      "smoke_status": "not-rerun-in-skill"
+    },
+    {
+      "id": "rf-0109",
+      "source_slug": "rf-0109-benchmark-ranking-table-heatmap",
+      "pack": "assets/case-packs/rf-0109",
+      "entrypoints": {
+        "python": "single_cell_benchmark_table_heatmap.py",
+        "r": "single_cell_benchmark_table_heatmap.R"
+      },
+      "required_inputs": [
+        "column_group.csv",
+        "column_info.csv",
+        "scib_summary.csv"
+      ],
+      "input_availability": "not-bundled",
+      "render_proof": "assets/cases/rf-0109.webp",
+      "provenance": "user-authored-reproduction",
+      "license": "Apache-2.0",
+      "smoke_status": "not-rerun-in-skill"
+    },
+    {
+      "id": "rf-0118",
+      "source_slug": "rf-0118-sankey-diagram",
+      "pack": "assets/case-packs/rf-0118",
+      "entrypoints": {
+        "python": "plot_sankey.py",
+        "r": "plot_sankey.R"
+      },
+      "required_inputs": ["data1.xlsx", "data2.xlsx"],
+      "input_availability": "not-bundled",
+      "render_proof": "assets/cases/rf-0118.webp",
+      "provenance": "user-authored-reproduction",
+      "license": "Apache-2.0",
+      "smoke_status": "not-rerun-in-skill"
+    },
+    {
+      "id": "rf-0157",
+      "source_slug": "rf-0157-upset-intersection-plots",
+      "pack": "assets/case-packs/rf-0157",
+      "entrypoints": {
+        "python": "plot.py",
+        "r": "plot.R"
+      },
+      "required_inputs": ["data1.xlsx", "data2.xlsx"],
+      "input_availability": "not-bundled",
+      "render_proof": "assets/cases/rf-0157.webp",
+      "provenance": "user-authored-reproduction",
+      "license": "Apache-2.0",
+      "smoke_status": "not-rerun-in-skill"
+    },
+    {
+      "id": "rf-0159",
+      "source_slug": "rf-0159-china-spatial-maps",
+      "pack": "assets/case-packs/rf-0159",
+      "entrypoints": {
+        "python": "plot.py",
+        "r": "plot.R"
+      },
+      "required_inputs": [
+        "data1.xlsx",
+        "data2.xlsx",
+        "china_city.geojson",
+        "china_province.geojson",
+        "vegzone_alb54.dbf",
+        "vegzone_alb54.prj",
+        "vegzone_alb54.sbn",
+        "vegzone_alb54.sbx",
+        "vegzone_alb54.shp",
+        "vegzone_alb54.shx"
+      ],
+      "input_availability": "not-bundled",
+      "render_proof": "assets/cases/rf-0159.webp",
+      "provenance": "user-authored-reproduction",
+      "license": "Apache-2.0",
+      "smoke_status": "not-rerun-in-skill"
+    },
+    {
+      "id": "rf-0173",
+      "source_slug": "rf-0173-paired-boxplots",
+      "pack": "assets/case-packs/rf-0173",
+      "entrypoints": {
+        "python": "plot.py",
+        "r": "plot.R"
+      },
+      "required_inputs": ["data1.csv", "data2.csv"],
+      "input_availability": "not-bundled",
+      "render_proof": "assets/cases/rf-0173.webp",
+      "provenance": "user-authored-reproduction",
+      "license": "Apache-2.0",
+      "smoke_status": "not-rerun-in-skill"
+    },
+    {
+      "id": "rf-0176",
+      "source_slug": "rf-0176-t-lymphocyte-subtype-umap",
+      "pack": "assets/case-packs/rf-0176",
+      "entrypoints": {
+        "python": "plot.py",
+        "r": "plot.R"
+      },
+      "required_inputs": ["data.csv", "tcells_resubset.rds"],
+      "input_availability": "not-bundled",
+      "render_proof": "assets/cases/rf-0176.webp",
+      "provenance": "user-authored-reproduction",
+      "license": "Apache-2.0",
+      "smoke_status": "not-rerun-in-skill"
+    },
+    {
+      "id": "rf-0178",
+      "source_slug": "rf-0178-log-log-regression-marginals-residual-boxplots",
+      "pack": "assets/case-packs/rf-0178",
+      "entrypoints": {
+        "python": "plot.py",
+        "r": "plot.R"
+      },
+      "required_inputs": ["data.csv"],
+      "input_availability": "synthetic-demo-generator",
+      "render_proof": "assets/cases/rf-0178.webp",
+      "provenance": "user-authored-reproduction",
+      "license": "Apache-2.0",
+      "smoke_status": "python-synthetic-demo-verified"
+    },
+    {
+      "id": "rf-0180",
+      "source_slug": "rf-0180-kinematic-age-velocity-asymmetric-uncertainty",
+      "pack": "assets/case-packs/rf-0180",
+      "entrypoints": {
+        "python": "plot.py",
+        "r": "plot.R"
+      },
+      "required_inputs": ["data.csv"],
+      "input_availability": "not-bundled",
+      "render_proof": "assets/cases/rf-0180.webp",
+      "provenance": "user-authored-reproduction",
+      "license": "Apache-2.0",
+      "smoke_status": "not-rerun-in-skill"
+    }
+  ]
+}

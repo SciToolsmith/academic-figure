@@ -114,9 +114,16 @@ If no case passes semantic compatibility, set:
 ```yaml
 implementation:
   case_influence:
-    case_ids: []
+    primary: null
+    contrast: null
     reuse_level: build-new
     borrowed_decisions: []
+    retrieval_status: no-suitable-case
+    audit_status_at_selection: null
+    implementation_status_at_selection: null
+    repair_gate_satisfied: not-applicable
+    decisive_match: []
+    rejected_near_match: null
 ```
 
 Then continue normally with the principle-first design.
