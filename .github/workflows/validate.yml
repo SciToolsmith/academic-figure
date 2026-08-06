@@ -24,7 +24,7 @@ jobs:
           - "3.12"
     env:
       SCIPLOT_DIAGNOSTICS: >-
-        ${{ runner.temp }}/sciplot-diagnostics-${{ matrix.python-version }}
+        ${{ github.workspace }}/sciplot-diagnostics-${{ matrix.python-version }}
 
     steps:
       - uses: actions/checkout@v7
