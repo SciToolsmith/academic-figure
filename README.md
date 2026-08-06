@@ -73,8 +73,8 @@ https://github.com/SciToolsmith/sci-plot/tree/main/skills/sci-plot
 
 ```bash
 git clone https://github.com/SciToolsmith/sci-plot.git
-mkdir -p "$HOME/.agents/skills"
-cp -R sci-plot/skills/sci-plot "$HOME/.agents/skills/sci-plot"
+mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
+cp -R sci-plot/skills/sci-plot "${CODEX_HOME:-$HOME/.codex}/skills/sci-plot"
 ```
 
 也可以复制到项目的 `.agents/skills/sci-plot/`，使它只在当前仓库范围内生效。参见 OpenAI 的 [Build skills](https://developers.openai.com/plugins/build/skills)。
