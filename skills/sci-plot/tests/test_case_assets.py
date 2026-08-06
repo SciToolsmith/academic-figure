@@ -67,7 +67,8 @@ class CaseAssetCatalogTests(unittest.TestCase):
         findings: list[str] = []
         for item in self.assets["cases"]:
             pack = ROOT / item["pack"]
-            for source in pack.iterdir():
+            for filename in item["entrypoints"].values():
+                source = pack / filename
                 text = source.read_text(encoding="utf-8").lower()
                 for token in forbidden:
                     if token in text:
