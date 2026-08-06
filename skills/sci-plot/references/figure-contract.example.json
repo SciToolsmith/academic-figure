@@ -3,6 +3,8 @@
   "task": {
     "mode": "create",
     "phase": "confirmatory",
+    "profile": "publication",
+    "execution_state": "proceed",
     "requested_change": null,
     "meaning_locked": []
   },
@@ -105,10 +107,11 @@
     "destination": "manuscript",
     "width_mm": 89,
     "height_mm_max": 120,
+    "formats": ["svg", "pdf", "png"],
     "primary_format": "svg",
     "preview_format": "png",
     "editable_text_required": true,
-    "resolution_dpi": null
+    "resolution_dpi": 300
   },
   "implementation": {
     "backend_by_panel": {
@@ -116,9 +119,19 @@
     },
     "final_assembly_owner": "python",
     "case_influence": {
-      "case_ids": ["rf-0173"],
-      "reuse_level": "structural",
-      "borrowed_decisions": ["preserve pair identity", "report complete-pair n"]
+      "primary": null,
+      "contrast": "rf-0173",
+      "reuse_level": "build-new",
+      "borrowed_decisions": [],
+      "retrieval_status": "repair-required-only",
+      "audit_status_at_selection": "conditional",
+      "implementation_status_at_selection": "static-reviewed",
+      "repair_gate_satisfied": false,
+      "decisive_match": ["paired analysis unit", "within-pair evidence"],
+      "rejected_near_match": {
+        "id": "rf-0173",
+        "reason": "paired-test and multiplicity repair gates remain open"
+      }
     },
     "random_seed": 20260804
   },
