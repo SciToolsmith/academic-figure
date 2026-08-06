@@ -146,3 +146,15 @@ jobs:
           path: ${{ env.SCIPLOT_DIAGNOSTICS }}
           if-no-files-found: warn
           retention-days: 14
+
+  required:
+    name: validate
+    needs: validate
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require every Python matrix job
+        env:
+          MATRIX_RESULT: ${{ needs.validate.result }}
+        run: test "$MATRIX_RESULT" = "success"
