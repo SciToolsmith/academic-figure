@@ -17,7 +17,7 @@ import struct
 import sys
 import zlib
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Iterable, Optional
 from xml.etree import ElementTree
 
 
@@ -56,7 +56,7 @@ def _check(
     checks.append(item)
 
 
-def _detect_format(data: bytes) -> str | None:
+def _detect_format(data: bytes) -> Optional[str]:
     stripped = data.lstrip()
     if data.startswith(b"\x89PNG\r\n\x1a\n"):
         return "png"
@@ -71,7 +71,7 @@ def _detect_format(data: bytes) -> str | None:
     return None
 
 
-def _declared_format(path: Path) -> str | None:
+def _declared_format(path: Path) -> Optional[str]:
     suffix = path.suffix.lower()
     if suffix in {".tif", ".tiff"}:
         return "tiff"
@@ -79,7 +79,7 @@ def _declared_format(path: Path) -> str | None:
     return value if value in SUPPORTED_FORMATS else None
 
 
-def _parse_length_mm(value: str | None) -> float | None:
+def _parse_length_mm(value: Optional[str]) -> Optional[float]:
     if value is None:
         return None
     match = re.fullmatch(
@@ -102,7 +102,7 @@ def _parse_length_mm(value: str | None) -> float | None:
     return None
 
 
-def _parse_number(value: str | None) -> float | None:
+def _parse_number(value: Optional[str]) -> Optional[float]:
     if value is None:
         return None
     match = re.match(r"\s*([+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?)", value)
@@ -119,10 +119,10 @@ def _compare_dimensions(
     checks: list[dict[str, Any]],
     check_id: str,
     path: Path,
-    actual_width: float | None,
-    actual_height: float | None,
-    target_width: float | None,
-    target_height: float | None,
+    actual_width: Optional[float],
+    actual_height: Optional[float],
+    target_width: Optional[float],
+    target_height: Optional[float],
     unit: str,
     tolerance: float,
 ) -> None:
@@ -206,7 +206,7 @@ def _svg_info(
 
     width_mm = _parse_length_mm(root.get("width"))
     height_mm = _parse_length_mm(root.get("height"))
-    view_box: list[float] | None = None
+    view_box: Optional[list[float]] = None
     raw_view_box = root.get("viewBox")
     if raw_view_box:
         try:
@@ -297,8 +297,8 @@ def _png_info(path: Path, data: bytes, checks: list[dict[str, Any]]) -> dict[str
             "has_alpha": color_type in {4, 6} or b"tRNS" in data,
         }
     )
-    dpi_x: float | None = None
-    dpi_y: float | None = None
+    dpi_x: Optional[float] = None
+    dpi_y: Optional[float] = None
     offset = 8
     has_iend = False
     while offset + 12 <= len(data):
@@ -371,7 +371,7 @@ def _pdf_dictionary(
     data: bytes,
     position: int,
     limit: int,
-) -> tuple[bytes, int] | None:
+) -> Optional[tuple[bytes, int]]:
     """Return one balanced PDF dictionary and the position after it."""
     if not data.startswith(b"<<", position):
         return None
@@ -425,7 +425,7 @@ def _validate_pdf_xref_table(
     *,
     visited: set[int],
     terminal_required: bool,
-) -> str | None:
+) -> Optional[str]:
     if not data.startswith(b"xref", xref_offset):
         return "startxref does not point to an xref table"
     position = xref_offset + len(b"xref")
@@ -531,7 +531,7 @@ def _validate_pdf_xref_stream(
     *,
     visited: set[int],
     terminal_required: bool,
-) -> str | None:
+) -> Optional[str]:
     object_header = _PDF_OBJECT_HEADER.match(data, xref_offset, startxref_offset)
     if object_header is None:
         return "startxref points to neither an xref table nor an indirect object"
@@ -734,7 +734,7 @@ def _validate_pdf_section(
     *,
     visited: set[int],
     terminal_required: bool,
-) -> str | None:
+) -> Optional[str]:
     if xref_offset in visited:
         return "cross-reference /Prev chain contains a cycle"
     if xref_offset <= 0 or xref_offset >= section_limit:
@@ -757,7 +757,7 @@ def _validate_pdf_section(
     )
 
 
-def _pdf_structure_error(data: bytes) -> str | None:
+def _pdf_structure_error(data: bytes) -> Optional[str]:
     if re.match(rb"%PDF-(?:1\.[0-7]|2\.0)(?:\r\n|\r|\n)", data) is None:
         return "PDF header has no supported version line"
     startxref_matches = list(
@@ -801,8 +801,8 @@ def _pdf_info(path: Path, data: bytes, checks: list[dict[str, Any]]) -> dict[str
         rb"([+-]?\d+(?:\.\d+)?)\s+([+-]?\d+(?:\.\d+)?)\s*\]",
         data,
     )
-    width_mm: float | None = None
-    height_mm: float | None = None
+    width_mm: Optional[float] = None
+    height_mm: Optional[float] = None
     if media_box:
         x0, y0, x1, y1 = (float(value) for value in media_box.groups())
         width_mm = (x1 - x0) * MM_PER_INCH / POINTS_PER_INCH
@@ -939,11 +939,11 @@ def _pillow_raster_info(
 def inspect_artifact(
     path: Path,
     *,
-    target_width_mm: float | None,
-    target_height_mm: float | None,
-    target_width_px: int | None,
-    target_height_px: int | None,
-    target_dpi: float | None,
+    target_width_mm: Optional[float],
+    target_height_mm: Optional[float],
+    target_width_px: Optional[int],
+    target_height_px: Optional[int],
+    target_dpi: Optional[float],
     tolerance: float,
     require_svg_text: bool,
 ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
@@ -1082,11 +1082,11 @@ def inspect_artifact(
 def inspect(
     paths: list[Path],
     *,
-    target_width_mm: float | None = None,
-    target_height_mm: float | None = None,
-    target_width_px: int | None = None,
-    target_height_px: int | None = None,
-    target_dpi: float | None = None,
+    target_width_mm: Optional[float] = None,
+    target_height_mm: Optional[float] = None,
+    target_width_px: Optional[int] = None,
+    target_height_px: Optional[int] = None,
+    target_dpi: Optional[float] = None,
     tolerance: float = 0.02,
     require_svg_text: bool = False,
     strict: bool = False,

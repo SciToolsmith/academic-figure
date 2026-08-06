@@ -12,6 +12,27 @@
       "status": "verified",
       "backend": "python",
       "manifest": "implementations/python/composition-bars-v1/implementation.json"
+    },
+    {
+      "id": "raw-distribution-v1",
+      "version": "1.0.0",
+      "status": "verified",
+      "backend": "python",
+      "manifest": "implementations/python/raw-distribution-v1/implementation.json"
+    },
+    {
+      "id": "paired-change-v1",
+      "version": "1.0.0",
+      "status": "verified",
+      "backend": "python",
+      "manifest": "implementations/python/paired-change-v1/implementation.json"
+    },
+    {
+      "id": "effect-forest-v1",
+      "version": "1.0.0",
+      "status": "verified",
+      "backend": "python",
+      "manifest": "implementations/python/effect-forest-v1/implementation.json"
     }
   ]
 }

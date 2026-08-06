@@ -15,6 +15,19 @@ EXAMPLE_PATH = ROOT / "references" / "figure-contract.example.json"
 DESCRIPTIVE_EXAMPLE_PATH = (
     ROOT / "references" / "figure-contract.descriptive-composition.example.json"
 )
+NATIVE_EXAMPLE_PATHS = {
+    "raw-distribution-v1": (
+        ROOT
+        / "references"
+        / "figure-contract.descriptive-distribution.example.json"
+    ),
+    "paired-change-v1": (
+        ROOT / "references" / "figure-contract.descriptive-paired.example.json"
+    ),
+    "effect-forest-v1": (
+        ROOT / "references" / "figure-contract.presentation-forest.example.json"
+    ),
+}
 
 SPEC = importlib.util.spec_from_file_location("validate_contract", VALIDATOR_PATH)
 assert SPEC is not None and SPEC.loader is not None
@@ -51,12 +64,203 @@ class FigureContractValidatorTests(unittest.TestCase):
         examples = (
             self.example,
             json.loads(DESCRIPTIVE_EXAMPLE_PATH.read_text(encoding="utf-8")),
+            *(
+                json.loads(path.read_text(encoding="utf-8"))
+                for path in NATIVE_EXAMPLE_PATHS.values()
+            ),
         )
         for example in examples:
             for stage in ("plan", "pre-render", "final"):
                 with self.subTest(phase=example["task"]["phase"], stage=stage):
                     self.assertEqual(statuses_for(example, "CT-015", stage), ["PASS"])
                     self.assertEqual(statuses_for(example, "CT-043", stage), ["PASS"])
+
+    def test_native_examples_pass_final_gate_and_match_smoke_contracts(self) -> None:
+        expected = {
+            "raw-distribution-v1": ("descriptive", 18),
+            "paired-change-v1": ("descriptive", 24),
+            "effect-forest-v1": ("presentation", 6),
+        }
+        for native_id, path in NATIVE_EXAMPLE_PATHS.items():
+            with self.subTest(native_id=native_id):
+                contract = json.loads(path.read_text(encoding="utf-8"))
+                phase, included = expected[native_id]
+                native = contract["implementation"]["native_implementation"]
+                self.assertEqual(native["id"], native_id)
+                self.assertEqual(native["version"], "1.0.0")
+                self.assertEqual(native["supported_task_phase"], phase)
+                self.assertEqual(contract["task"]["phase"], phase)
+                self.assertEqual(
+                    contract["data_integrity"]["included_rows_or_items"],
+                    included,
+                )
+                self.assertEqual(contract["target"]["width_mm"], 183)
+                self.assertEqual(contract["target"]["height_mm"], 105)
+                self.assertEqual(
+                    contract["target"]["formats"],
+                    ["svg", "pdf", "png"],
+                )
+                self.assertEqual(contract["target"]["primary_format"], "svg")
+                self.assertEqual(contract["target"]["preview_format"], "png")
+                self.assertEqual(contract["target"]["resolution_dpi"], 300)
+                checks = results_for(contract, "final")
+                self.assertEqual(
+                    validate_contract.summarize(checks, "final")["status"],
+                    "PASS",
+                )
+
+    def test_publication_confirmatory_claim_requires_complete_estimand(self) -> None:
+        contract = copy.deepcopy(self.example)
+        estimand = contract["estimands"][0]
+        contract.pop("estimands")
+        contract["claims"][0].pop("estimand_id")
+        contract["panels"][0].pop("estimand_id")
+
+        self.assertIn("WARN", statuses_for(contract, "CT-016", "plan"))
+        self.assertIn("FAIL", statuses_for(contract, "CT-016", "pre-render"))
+        self.assertIn("FAIL", statuses_for(contract, "CT-016", "final"))
+
+        contract["estimands"] = [estimand]
+        contract["claims"][0]["estimand_id"] = "E1"
+        contract["panels"][0]["estimand_id"] = "E1"
+        for stage in ("plan", "pre-render", "final"):
+            self.assertEqual(statuses_for(contract, "CT-016", stage), ["PASS"])
+
+    def test_required_estimand_fields_are_stage_gated(self) -> None:
+        for field in validate_contract.REQUIRED_ESTIMAND_FIELDS:
+            with self.subTest(field=field):
+                contract = copy.deepcopy(self.example)
+                del contract["estimands"][0][field]
+                self.assertIn("WARN", statuses_for(contract, "CT-016", "plan"))
+                self.assertIn(
+                    "FAIL",
+                    statuses_for(contract, "CT-016", "pre-render"),
+                )
+                self.assertIn("FAIL", statuses_for(contract, "CT-016", "final"))
+
+    def test_estimand_references_must_resolve_and_panel_must_agree(self) -> None:
+        contract = copy.deepcopy(self.example)
+        contract["claims"][0]["estimand_id"] = "E404"
+        self.assertIn("FAIL", statuses_for(contract, "CT-016", "plan"))
+
+        contract = copy.deepcopy(self.example)
+        second = copy.deepcopy(contract["estimands"][0])
+        second["id"] = "E2"
+        contract["estimands"].append(second)
+        contract["panels"][0]["estimand_id"] = "E2"
+        self.assertIn("FAIL", statuses_for(contract, "CT-016", "plan"))
+
+    def test_confirmatory_supporting_panel_requires_claim_estimand(self) -> None:
+        contract = copy.deepcopy(self.example)
+        supporting = copy.deepcopy(contract["panels"][0])
+        supporting.update(
+            {
+                "id": "b",
+                "evidence_role": "supporting",
+                "question": "Does an independent supporting view bear on C1?",
+                "unique_contribution": "adds a distinct supporting view of C1",
+            }
+        )
+        supporting.pop("estimand_id")
+        contract["panels"].append(supporting)
+        contract["traceability"][0]["supported_by_panels"].append("b")
+
+        self.assertIn("WARN", statuses_for(contract, "CT-016", "plan"))
+        self.assertIn("FAIL", statuses_for(contract, "CT-016", "pre-render"))
+        self.assertIn("FAIL", statuses_for(contract, "CT-016", "final"))
+
+        contract["panels"][1]["estimand_id"] = "E1"
+        for stage in ("plan", "pre-render", "final"):
+            self.assertEqual(statuses_for(contract, "CT-016", stage), ["PASS"])
+
+    def test_confirmatory_primary_panel_requires_claim_estimand(self) -> None:
+        contract = copy.deepcopy(self.example)
+        self.assertEqual(contract["panels"][0]["evidence_role"], "primary")
+        contract["panels"][0].pop("estimand_id")
+
+        self.assertIn("WARN", statuses_for(contract, "CT-016", "plan"))
+        self.assertIn("FAIL", statuses_for(contract, "CT-016", "pre-render"))
+        self.assertIn("FAIL", statuses_for(contract, "CT-016", "final"))
+
+        contract["panels"][0]["estimand_id"] = "E1"
+        for stage in ("plan", "pre-render", "final"):
+            self.assertEqual(statuses_for(contract, "CT-016", stage), ["PASS"])
+
+    def test_confirmatory_supporting_panel_rejects_conflicting_estimand(self) -> None:
+        contract = copy.deepcopy(self.example)
+        second = copy.deepcopy(contract["estimands"][0])
+        second["id"] = "E2"
+        contract["estimands"].append(second)
+        supporting = copy.deepcopy(contract["panels"][0])
+        supporting.update(
+            {
+                "id": "b",
+                "estimand_id": "E2",
+                "evidence_role": "supporting",
+                "question": "Does a different target support C1?",
+                "unique_contribution": "claims to support C1 using another target",
+            }
+        )
+        contract["panels"].append(supporting)
+        contract["traceability"][0]["supported_by_panels"].append("b")
+
+        self.assertIn("FAIL", statuses_for(contract, "CT-016", "plan"))
+        self.assertIn("FAIL", statuses_for(contract, "CT-016", "pre-render"))
+        self.assertIn("FAIL", statuses_for(contract, "CT-016", "final"))
+
+    def test_estimand_gate_does_not_block_exempt_routes_or_phases(self) -> None:
+        scenarios = (
+            ("create", "descriptive", "publication"),
+            ("create", "presentation", "publication"),
+            ("create", "confirmatory", "minimal"),
+            ("review", "confirmatory", "inferred-review"),
+            ("export", "confirmatory", "minimal"),
+        )
+        for mode, phase, profile in scenarios:
+            with self.subTest(mode=mode, phase=phase, profile=profile):
+                contract = copy.deepcopy(self.example)
+                contract["task"].update(
+                    {"mode": mode, "phase": phase, "profile": profile}
+                )
+                contract.pop("estimands")
+                contract["claims"][0].pop("estimand_id")
+                contract["panels"][0].pop("estimand_id")
+                if phase == "descriptive":
+                    contract["claims"][0]["level"] = "descriptive"
+                    contract["panels"][0]["statistics"] = "not-applicable"
+                self.assertNotIn(
+                    "FAIL",
+                    statuses_for(contract, "CT-016", "final"),
+                )
+
+    def test_optional_incomplete_estimand_warns_but_does_not_block(self) -> None:
+        contract = copy.deepcopy(self.example)
+        contract["task"]["phase"] = "presentation"
+        contract["estimands"][0].pop("missing_data_policy")
+        self.assertEqual(statuses_for(contract, "CT-016", "final"), ["WARN"])
+
+    def test_review_may_record_an_unresolved_estimand_reference(self) -> None:
+        contract = copy.deepcopy(self.example)
+        contract["task"].update(
+            {
+                "mode": "review",
+                "phase": "confirmatory",
+                "profile": "inferred-review",
+            }
+        )
+        contract["claims"][0]["estimand_id"] = "unknown"
+        contract["panels"][0]["estimand_id"] = "unknown"
+        contract["estimands"][0].pop("missing_data_policy")
+        self.assertNotIn("FAIL", statuses_for(contract, "CT-016", "final"))
+        self.assertIn("WARN", statuses_for(contract, "CT-016", "final"))
+
+    def test_descriptive_statistics_do_not_match_p_value_inside_follow_up_values(
+        self,
+    ) -> None:
+        contract = json.loads(
+            NATIVE_EXAMPLE_PATHS["paired-change-v1"].read_text(encoding="utf-8")
+        )
+        self.assertEqual(statuses_for(contract, "CT-004", "final"), ["PASS"])
 
     def test_placeholders_warn_in_plan_and_block_critical_fields_later(self) -> None:
         placeholders = (

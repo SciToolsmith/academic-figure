@@ -35,6 +35,47 @@ class SemanticDiffTests(unittest.TestCase):
     def test_statistics_change_is_semantic(self) -> None:
         self.assertEqual(classify("panels[0].statistics.test_or_model"), "semantic")
 
+    def test_estimand_changes_are_semantic(self) -> None:
+        for path in (
+            "estimands[0].population_or_system",
+            "estimands[0].contrast_or_exposure",
+            "estimands[0].effect_scale",
+            "claims[0].estimand_id",
+            "panels[0].estimand_id",
+        ):
+            with self.subTest(path=path):
+                self.assertEqual(classify(path), "semantic")
+
+    def test_estimand_value_change_is_reported_as_semantic(self) -> None:
+        before = {
+            "estimands": [
+                {
+                    "id": "E1",
+                    "effect_scale": "difference in original units",
+                }
+            ]
+        }
+        after = {
+            "estimands": [
+                {
+                    "id": "E1",
+                    "effect_scale": "ratio with one as the null",
+                }
+            ]
+        }
+        changes = compare(before, after)
+        self.assertEqual(
+            changes,
+            [
+                {
+                    "path": "estimands[0].effect_scale",
+                    "class": "semantic",
+                    "before": "difference in original units",
+                    "after": "ratio with one as the null",
+                }
+            ],
+        )
+
     def test_panel_purpose_fields_are_semantic(self) -> None:
         for field in ("question", "evidence_role", "unique_contribution"):
             with self.subTest(field=field):

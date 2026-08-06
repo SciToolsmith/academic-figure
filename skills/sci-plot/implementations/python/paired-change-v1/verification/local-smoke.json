@@ -1,0 +1,99 @@
+{
+  "schema_version": "sciplot.implementation-verification/v1",
+  "implementation_id": "paired-change-v1",
+  "implementation_version": "1.0.0",
+  "verified_on": "2026-08-06",
+  "source_sha256": "56811ecb9675ed911dad830fc364955462f4387310ce86f135b0715a9971057a",
+  "source_files_sha256": {
+    "render.py": "56811ecb9675ed911dad830fc364955462f4387310ce86f135b0715a9971057a"
+  },
+  "shared_source_files_sha256": {
+    "implementations/python/_shared/runtime.py": "bc9ed53c6c64f3cfb87790c094a5d9db6f06cb2390bff0b168e320e11c647d70"
+  },
+  "fixture_sha256": "32cb2689e4b82ffee8b863d863c6c2c132cfd1c74f9a1bae9a4b8c33311e7f27",
+  "fixture_manifest_sha256": "98bba62191387b6ec7d0f0d2f0dfd28ad9c7d01cf35b67112808184c0c29dabb",
+  "figure_contract_sha256": "f6484da32dd188776ee82fb7ff78783e2b345b165211e9cdfb3804acb0532f34",
+  "runtime": {
+    "python": "3.12.12",
+    "matplotlib": "3.10.8",
+    "platform": "macOS"
+  },
+  "command_profile": {
+    "run_mode": "smoke",
+    "group_order": [
+      "Control",
+      "Treatment"
+    ],
+    "timepoint_order": [
+      "Baseline",
+      "Week 8"
+    ],
+    "width_mm": 183,
+    "height_mm": 105,
+    "dpi": 300,
+    "figure_contract": "references/figure-contract.descriptive-paired.example.json",
+    "formats": [
+      "svg",
+      "pdf",
+      "png"
+    ]
+  },
+  "artifacts": {
+    "paired-change.svg": {
+      "sha256": "39c47bcbf840ba406716e1197dc8d5212a3c7178b36c012baf01516ffd7150a7",
+      "bytes": 17983,
+      "artifact_qa": "PASS"
+    },
+    "paired-change.pdf": {
+      "sha256": "fe2862c15dd1cf219f803c8f6dc737747ad78f8eb9140ac070583e71e733e6c2",
+      "bytes": 42914,
+      "artifact_qa": "PASS"
+    },
+    "paired-change.png": {
+      "sha256": "23f57d3e1afb908c70d576602fbbaa8fe11eeec01d4237337a80c32cee51e063",
+      "bytes": 172223,
+      "artifact_qa": "PASS"
+    },
+    "analysis-table.csv": {
+      "sha256": "20886cd1a684eb458ac6e68bbf90779f978419da40a906f858f2a9d745f87fbe",
+      "bytes": 1049
+    },
+    "data-validation.json": {
+      "sha256": "490bbfb0bf9a09183a50ee56c86c7f04048635e8ecee6ee2dbf5099e4f2442e0",
+      "bytes": 1147,
+      "status": "PASS"
+    }
+  },
+  "artifact_evidence": {
+    "delivery": {
+      "status": "PASS"
+    },
+    "svg_pdf_png": {
+      "status": "PASS",
+      "checks": {
+        "pass": 15,
+        "warn": 0,
+        "fail": 0
+      }
+    },
+    "unified_qa": {
+      "status": "PASS",
+      "checks": {
+        "pass": 42,
+        "warn": 0,
+        "fail": 0
+      }
+    }
+  },
+  "final_size_visual_review": {
+    "completed": true,
+    "result": "PASS",
+    "checks": [
+      "every line connects one subject across the two timepoints",
+      "shared y scale preserves cross-group comparability",
+      "within-group median changes and pair counts are legible",
+      "synthetic watermark prominent",
+      "no visible clipping or overlap"
+    ]
+  }
+}

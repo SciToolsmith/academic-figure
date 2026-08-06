@@ -16,7 +16,7 @@ import re
 import sys
 import unicodedata
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Iterable, Optional, Union
 
 
 SCHEMA = "sciplot.contract-lint/v1"
@@ -84,6 +84,7 @@ PLACEHOLDER_PATTERNS = (
 CRITICAL_PLACEHOLDER_ROOTS = {
     "task",
     "question",
+    "estimands",
     "claims",
     "evidence",
     "panels",
@@ -95,6 +96,22 @@ CRITICAL_PLACEHOLDER_ROOTS = {
     "review_risks",
     "acceptance",
     "unknowns",
+}
+REQUIRED_ESTIMAND_FIELDS = (
+    "population_or_system",
+    "analysis_unit",
+    "outcome",
+    "timepoint_or_horizon",
+    "contrast_or_exposure",
+    "summary_measure",
+    "effect_scale",
+    "adjustment_or_aggregation",
+    "missing_data_policy",
+)
+ESTIMAND_CLAIM_LEVELS = {
+    "associational",
+    "predictive",
+    "causal",
 }
 
 
@@ -139,7 +156,7 @@ def descriptive_statistics_conflicts(statistics: Any) -> list[str]:
         return [
             marker
             for marker in sorted(INFERENTIAL_STATISTIC_MARKERS)
-            if marker in text
+            if controlled_phrase_present(marker, text)
         ]
     if not isinstance(statistics, dict):
         return []
@@ -152,11 +169,20 @@ def descriptive_statistics_conflicts(statistics: Any) -> list[str]:
         normalized = str(value).strip().lower()
         if normalized and not is_not_applicable_value(normalized):
             conflicts.append(field)
-    serialized = json.dumps(statistics, ensure_ascii=False).lower()
+    semantic_statistics = {
+        key: value
+        for key, value in statistics.items()
+        if not (
+            key in {"test_or_model", "multiplicity"}
+            and value is not None
+            and is_not_applicable_value(value)
+        )
+    }
+    serialized = json.dumps(semantic_statistics, ensure_ascii=False).lower()
     conflicts.extend(
         marker
         for marker in sorted(INFERENTIAL_STATISTIC_MARKERS)
-        if marker in serialized
+        if controlled_phrase_present(marker, serialized)
     )
     return sorted(set(conflicts))
 
@@ -207,8 +233,8 @@ def controlled_phrase_present(token: str, text: str) -> bool:
 
 
 def iter_placeholder_paths(
-    value: Any, path: tuple[str | int, ...] = ()
-) -> Iterable[tuple[str | int, ...]]:
+    value: Any, path: tuple[Union[str, int], ...] = ()
+) -> Iterable[tuple[Union[str, int], ...]]:
     """Yield paths whose scalar string values contain placeholder tokens."""
 
     if isinstance(value, dict):
@@ -221,7 +247,7 @@ def iter_placeholder_paths(
         yield path
 
 
-def render_path(path: tuple[str | int, ...]) -> str:
+def render_path(path: tuple[Union[str, int], ...]) -> str:
     """Render a nested JSON path in a compact, stable form."""
 
     rendered = ""
@@ -233,7 +259,7 @@ def render_path(path: tuple[str | int, ...]) -> str:
     return rendered or "<root>"
 
 
-def is_critical_placeholder_path(path: tuple[str | int, ...]) -> bool:
+def is_critical_placeholder_path(path: tuple[Union[str, int], ...]) -> bool:
     """Classify fields that affect scientific meaning or delivered artifacts."""
 
     return bool(path) and path[0] in CRITICAL_PLACEHOLDER_ROOTS
@@ -310,6 +336,30 @@ def has_explicit_statistics(value: Any) -> bool:
         isinstance(value, dict)
         and bool(value)
         and any(not is_blank(meaning) for meaning in value.values())
+    )
+
+
+def claim_requires_estimand(
+    claim: Any,
+    *,
+    mode: Any,
+    phase: Any,
+    profile: Any,
+) -> bool:
+    """Return whether a production claim needs an explicit estimand ledger.
+
+    The gate is deliberately narrow for contract-v1 compatibility: review,
+    export, minimal, descriptive, exploratory, and presentation-only work can
+    retain their existing contract shape. Publication confirmatory production
+    routes must name the quantitative target for every non-descriptive claim.
+    """
+
+    return (
+        isinstance(claim, dict)
+        and mode in {"create", "adapt", "revise"}
+        and phase == "confirmatory"
+        and profile == "publication"
+        and claim.get("level") in ESTIMAND_CLAIM_LEVELS
     )
 
 
@@ -508,6 +558,95 @@ def check_contract(
         add("CT-011", "PASS", "no claim ledger is required for this contract")
     known_claims = set(claim_ids)
 
+    # Parse the estimand ledger before validating claims and panels that may
+    # reference it. Estimands are an additive contract-v1 field: legacy
+    # descriptive, minimal, review, export, and presentation contracts do not
+    # need to add boilerplate merely to remain valid.
+    estimands_value = payload.get("estimands")
+    estimands: list[Any]
+    estimand_structure_errors: list[str] = []
+    if estimands_value is None:
+        estimands = []
+    elif isinstance(estimands_value, list):
+        estimands = estimands_value
+    else:
+        estimands = []
+        estimand_structure_errors.append("estimands must be an array")
+
+    estimand_ids: list[str] = []
+    estimand_missing_fields: dict[str, list[str]] = {}
+    for index, estimand in enumerate(estimands):
+        if not isinstance(estimand, dict):
+            estimand_structure_errors.append(
+                f"estimands[{index}] must be an object"
+            )
+            continue
+        estimand_id = estimand.get("id")
+        if not isinstance(estimand_id, str) or is_blank(estimand_id):
+            estimand_structure_errors.append(
+                f"estimands[{index}].id must be a non-empty string"
+            )
+            continue
+        estimand_ids.append(estimand_id)
+        missing = [
+            field
+            for field in REQUIRED_ESTIMAND_FIELDS
+            if not is_explicit_text(estimand.get(field))
+        ]
+        if missing:
+            estimand_missing_fields[estimand_id] = missing
+
+    if len(estimand_ids) != len(set(estimand_ids)):
+        estimand_structure_errors.append("estimand IDs must be unique")
+    known_estimands = set(estimand_ids)
+
+    claim_estimand_refs: dict[str, str] = {}
+    required_claim_estimand_refs: dict[str, str] = {}
+    required_estimand_gaps: list[str] = []
+    required_estimand_ids: set[str] = set()
+    optional_estimand_reference_gaps: list[str] = []
+    for index, claim in enumerate(claims):
+        if not isinstance(claim, dict):
+            continue
+        claim_label = str(claim.get("id") or index)
+        estimand_id = claim.get("estimand_id")
+        if estimand_id is not None:
+            if not isinstance(estimand_id, str):
+                estimand_structure_errors.append(
+                    f"claim {claim_label}.estimand_id must be a non-empty string"
+                )
+            elif is_blank(estimand_id):
+                optional_estimand_reference_gaps.append(
+                    f"claim {claim_label}.estimand_id is unresolved"
+                )
+            elif estimand_id not in known_estimands:
+                estimand_structure_errors.append(
+                    f"claim {claim_label} references unknown estimand "
+                    f"{estimand_id!r}"
+                )
+            else:
+                claim_estimand_refs[claim_label] = estimand_id
+
+        if claim_requires_estimand(
+            claim,
+            mode=mode,
+            phase=phase,
+            profile=profile,
+        ):
+            if not isinstance(estimand_id, str) or is_blank(estimand_id):
+                required_estimand_gaps.append(
+                    f"claim {claim_label} has no estimand_id"
+                )
+            elif estimand_id in known_estimands:
+                required_estimand_ids.add(estimand_id)
+                required_claim_estimand_refs[claim_label] = estimand_id
+                missing = estimand_missing_fields.get(estimand_id, [])
+                if missing:
+                    required_estimand_gaps.append(
+                        f"claim {claim_label} references incomplete estimand "
+                        f"{estimand_id}: {', '.join(missing)}"
+                    )
+
     # CT-015 — predictive and causal claims need claim-local, auditable
     # support. A control or diagnostic panel can contribute evidence, but its
     # mere presence is never a substitute for the design, support, assumptions,
@@ -598,6 +737,8 @@ def check_contract(
 
     panel_ids: list[str] = []
     panel_claim_links: dict[str, set[str]] = {}
+    panel_estimand_refs: dict[str, str] = {}
+    required_evidentiary_panel_estimand_gaps: list[str] = []
     for index, panel in enumerate(panels):
         if not isinstance(panel, dict):
             add("CT-012", "FAIL", f"panels[{index}] must be an object")
@@ -673,6 +814,47 @@ def check_contract(
             value for value in supported if isinstance(value, str)
         }
 
+        estimand_id = panel.get("estimand_id")
+        linked_required_estimands = {
+            required_claim_estimand_refs[claim_id]
+            for claim_id in supported
+            if claim_id in required_claim_estimand_refs
+        }
+        if role in {"primary", "supporting"} and linked_required_estimands and (
+            not isinstance(estimand_id, str) or is_blank(estimand_id)
+        ):
+            required_evidentiary_panel_estimand_gaps.append(
+                f"{role} panel {panel_label} must declare estimand_id "
+                f"for publication confirmatory claim target(s) "
+                f"{sorted(linked_required_estimands)}"
+            )
+        if estimand_id is not None:
+            if not isinstance(estimand_id, str):
+                estimand_structure_errors.append(
+                    f"panel {panel_label}.estimand_id must be a non-empty string"
+                )
+            elif is_blank(estimand_id):
+                optional_estimand_reference_gaps.append(
+                    f"panel {panel_label}.estimand_id is unresolved"
+                )
+            elif estimand_id not in known_estimands:
+                estimand_structure_errors.append(
+                    f"panel {panel_label} references unknown estimand "
+                    f"{estimand_id!r}"
+                )
+            else:
+                panel_estimand_refs[panel_label] = estimand_id
+                linked_estimands = {
+                    claim_estimand_refs[claim_id]
+                    for claim_id in supported
+                    if claim_id in claim_estimand_refs
+                }
+                if linked_estimands and linked_estimands != {estimand_id}:
+                    estimand_structure_errors.append(
+                        f"panel {panel_label} estimand {estimand_id!r} conflicts "
+                        f"with supported claim estimands {sorted(linked_estimands)}"
+                    )
+
         statistics = panel.get("statistics")
         if isinstance(statistics, dict):
             if not is_blank(statistics.get("uncertainty")) and is_blank(
@@ -697,6 +879,75 @@ def check_contract(
     elif panels and len(panel_ids) == len(panels):
         add("CT-012", "PASS", f"{len(panel_ids)} valid, unique panel IDs")
     known_panels = set(panel_ids)
+
+    # CT-016 — estimand ledger completeness and references. A malformed
+    # reference is always a structural failure. Incompleteness becomes a
+    # production failure only for the publication-confirmatory claims selected
+    # by claim_requires_estimand(); optional ledgers remain advisory.
+    if estimand_structure_errors:
+        add(
+            "CT-016",
+            "FAIL",
+            "estimand ledger/reference errors: "
+            + "; ".join(estimand_structure_errors),
+        )
+    if required_estimand_gaps:
+        add(
+            "CT-016",
+            stage_status(stage),
+            "publication confirmatory claims require complete estimands: "
+            + "; ".join(required_estimand_gaps),
+        )
+    if required_evidentiary_panel_estimand_gaps:
+        add(
+            "CT-016",
+            stage_status(stage),
+            "primary and supporting panels for publication confirmatory "
+            "claims require the same explicit estimand_id: "
+            + "; ".join(required_evidentiary_panel_estimand_gaps),
+        )
+
+    optional_incomplete = {
+        estimand_id: missing
+        for estimand_id, missing in estimand_missing_fields.items()
+        if estimand_id not in required_estimand_ids
+    }
+    if optional_incomplete:
+        rendered_gaps = "; ".join(
+            f"{estimand_id}: {', '.join(missing)}"
+            for estimand_id, missing in sorted(optional_incomplete.items())
+        )
+        add(
+            "CT-016",
+            "WARN",
+            "optional estimand entries are incomplete: " + rendered_gaps,
+        )
+    if optional_estimand_reference_gaps:
+        add(
+            "CT-016",
+            "WARN",
+            "optional estimand references are unresolved: "
+            + "; ".join(optional_estimand_reference_gaps),
+        )
+    if (
+        not estimand_structure_errors
+        and not required_estimand_gaps
+        and not required_evidentiary_panel_estimand_gaps
+        and not optional_incomplete
+        and not optional_estimand_reference_gaps
+    ):
+        if estimands:
+            add(
+                "CT-016",
+                "PASS",
+                f"{len(estimand_ids)} complete, uniquely identified estimand(s)",
+            )
+        else:
+            add(
+                "CT-016",
+                "PASS",
+                "no estimand ledger is required by this route/profile/phase",
+            )
 
     # CT-014 — traceability ledger and bidirectional reference integrity.
     traceability_value = payload.get("traceability")
@@ -810,7 +1061,7 @@ def check_contract(
             add("CT-022", "FAIL", "data_integrity.exclusions must be an array")
             exclusions = []
 
-        previous_after: int | None = None
+        previous_after: Optional[int] = None
         valid_exclusion_counts = True
         for index, exclusion in enumerate(exclusions):
             if not isinstance(exclusion, dict):

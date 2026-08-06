@@ -1,0 +1,12 @@
+{
+  "schema_version": "sciplot.data-manifest/v1",
+  "synthetic": true,
+  "production_use_allowed": false,
+  "inputs": {
+    "demo.csv": "32cb2689e4b82ffee8b863d863c6c2c132cfd1c74f9a1bae9a4b8c33311e7f27"
+  },
+  "generation": "hand-authored deterministic smoke fixture",
+  "analysis_units": 12,
+  "rows": 24,
+  "warning": "These values exist only to test renderer guards and artifacts."
+}

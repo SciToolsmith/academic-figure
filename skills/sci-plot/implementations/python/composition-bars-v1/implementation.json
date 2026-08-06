@@ -112,10 +112,10 @@
     "fixture_manifest": "examples/demo-data.json",
     "figure_contract": "references/figure-contract.descriptive-composition.example.json",
     "test_module": "tests/test_implementation_packs.py",
-    "source_sha256": "78976d31848d16cf9da8a1a82cd6abadf1f092e87cb29864a69a8b673ab7ad55",
+    "source_sha256": "de38b6e86d82b819e8aeb2137e65075c14ffc0cf592de3f8a07f6f885f9e1de9",
     "source_files_sha256": {
-      "render.py": "78976d31848d16cf9da8a1a82cd6abadf1f092e87cb29864a69a8b673ab7ad55",
-      "contract.py": "d1dfbf9f2f674cf14557e16769dcc1100562844d0a5e87977dce5e9856467fc4"
+      "render.py": "de38b6e86d82b819e8aeb2137e65075c14ffc0cf592de3f8a07f6f885f9e1de9",
+      "contract.py": "0b40436e8e02b6c2cf79ec0752eb6e63a52da6f28c9debcf923443ff91c1de2e"
     },
     "local_smoke_status": "passed-svg-pdf-png-2026-08-05",
     "local_smoke_report": "verification/local-smoke.json",

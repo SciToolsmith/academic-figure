@@ -10,6 +10,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from typing import Optional
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -19,6 +20,11 @@ RENDERER = PACK / "render.py"
 DEMO = PACK / "examples" / "demo.csv"
 INSPECTOR = ROOT / "scripts" / "inspect_artifacts.py"
 DELIVERY_VALIDATOR = ROOT / "scripts" / "validate_delivery.py"
+COMPOSITION_CONTRACT = (
+    ROOT
+    / "references"
+    / "figure-contract.descriptive-composition.example.json"
+)
 
 
 def run(*arguments: str, check: bool = True) -> subprocess.CompletedProcess[str]:
@@ -36,13 +42,27 @@ class ImplementationCatalogTests(unittest.TestCase):
         completed = run(str(VALIDATOR), "--pretty")
         result = json.loads(completed.stdout)
         self.assertEqual(result["status"], "valid")
-        self.assertEqual(result["count"], 1)
+        self.assertEqual(result["count"], 4)
+        phases = {
+            item["id"]: item["supported_task_phases"]
+            for item in result["implementations"]
+        }
         self.assertEqual(
-            result["implementations"][0]["id"], "composition-bars-v1"
-        )
-        self.assertEqual(
-            result["implementations"][0]["supported_task_phases"],
-            ["descriptive", "presentation"],
+            phases,
+            {
+                "composition-bars-v1": ["descriptive", "presentation"],
+                "raw-distribution-v1": [
+                    "exploratory",
+                    "descriptive",
+                    "presentation",
+                ],
+                "paired-change-v1": [
+                    "exploratory",
+                    "descriptive",
+                    "presentation",
+                ],
+                "effect-forest-v1": ["confirmatory", "presentation"],
+            },
         )
 
     def test_renderer_does_not_use_silent_tight_crop(self) -> None:
@@ -115,50 +135,41 @@ class CompositionRendererRuntimeTests(unittest.TestCase):
         self,
         directory: Path,
         *,
-        formats: list[str] | None = None,
+        formats: Optional[list[str]] = None,
         phase: str = "descriptive",
     ) -> Path:
+        declared_formats = formats or ["svg"]
         contract_path = directory / (
-            "figure-contract-" + "-".join(formats or ["svg"]) + ".json"
+            "figure-contract-" + "-".join(declared_formats) + ".json"
         )
+        payload = json.loads(COMPOSITION_CONTRACT.read_text(encoding="utf-8"))
+        payload["task"]["phase"] = phase
+        payload["data_integrity"]["expected_rows_or_items"] = 4
+        payload["data_integrity"]["included_rows_or_items"] = 4
+        payload["data_integrity"]["category_order"] = {
+            "facet": ["F1"],
+            "category": ["A", "B"],
+        }
+        payload["panels"][0]["data_source"] = "production.csv"
+        payload["target"]["formats"] = declared_formats
+        payload["target"]["primary_format"] = (
+            "svg" if "svg" in declared_formats else declared_formats[0]
+        )
+        payload["target"]["preview_format"] = (
+            "png"
+            if "png" in declared_formats
+            else payload["target"]["primary_format"]
+        )
+        payload["target"]["resolution_dpi"] = (
+            300
+            if {"png", "tiff"} & set(declared_formats)
+            else None
+        )
+        payload["implementation"]["native_implementation"][
+            "supported_task_phase"
+        ] = phase
         contract_path.write_text(
-            json.dumps(
-                {
-                    "contract_version": 1,
-                    "task": {
-                        "phase": phase,
-                        "profile": "minimal",
-                        "execution_state": "proceed",
-                    },
-                    "target": {
-                        "width_mm": 183,
-                        "height_mm": 105,
-                        "formats": formats or ["svg"],
-                        "primary_format": "svg",
-                        "preview_format": "svg",
-                        "resolution_dpi": (
-                            300
-                            if {"png", "tiff"} & set(formats or ["svg"])
-                            else None
-                        ),
-                    },
-                    "data_integrity": {
-                        "included_rows_or_items": 4,
-                        "transformations": [
-                            {
-                                "operation": "divide counts by each sample total",
-                                "guard": "positive denominator",
-                            }
-                        ],
-                    },
-                    "implementation": {
-                        "native_implementation": {
-                            "id": "composition-bars-v1",
-                            "version": "1.0.0",
-                        }
-                    },
-                }
-            ),
+            json.dumps(payload),
             encoding="utf-8",
         )
         return contract_path
@@ -235,6 +246,7 @@ class CompositionRendererRuntimeTests(unittest.TestCase):
 
     def test_simulated_input_cannot_be_declared_production(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
+            base = Path(temp)
             completed = run(
                 str(RENDERER),
                 "--input",
@@ -253,6 +265,178 @@ class CompositionRendererRuntimeTests(unittest.TestCase):
             )
             self.assertEqual(completed.returncode, 2)
             self.assertIn("CB-DEMO-01", completed.stderr)
+
+            input_path = base / "synthetic-marker.csv"
+            input_path.write_text(
+                DEMO.read_text(encoding="utf-8")
+                .replace(
+                    "simulated,Day 0,S01,Alpha,0.42",
+                    "synthetic,Day 0,S01,Alpha,0.421",
+                    1,
+                )
+                .replace("simulated,", "synthetic,"),
+                encoding="utf-8",
+            )
+            manifest_path = base / "forged-production.json"
+            manifest_path.write_text(
+                json.dumps(
+                    {
+                        "synthetic": False,
+                        "production_use_allowed": True,
+                        "input_sha256": hashlib.sha256(
+                            input_path.read_bytes()
+                        ).hexdigest(),
+                    }
+                ),
+                encoding="utf-8",
+            )
+            explicit_marker = run(
+                str(RENDERER),
+                "--input",
+                str(input_path),
+                "--data-manifest",
+                str(manifest_path),
+                "--output-dir",
+                str(base / "synthetic-out"),
+                "--run-mode",
+                "production",
+                "--value-mode",
+                "proportion",
+                "--formats",
+                "svg",
+                check=False,
+            )
+            self.assertEqual(explicit_marker.returncode, 2)
+            self.assertIn("synthetic/demo rows", explicit_marker.stderr)
+
+            provenance_only = base / "provenance-only-copy.csv"
+            provenance_only.write_text(
+                DEMO.read_text(encoding="utf-8").replace(
+                    "simulated,",
+                    "observed,",
+                ),
+                encoding="utf-8",
+            )
+            provenance_manifest = base / "provenance-only-production.json"
+            provenance_manifest.write_text(
+                json.dumps(
+                    {
+                        "synthetic": False,
+                        "production_use_allowed": True,
+                        "input_sha256": hashlib.sha256(
+                            provenance_only.read_bytes()
+                        ).hexdigest(),
+                    }
+                ),
+                encoding="utf-8",
+            )
+            provenance_result = run(
+                str(RENDERER),
+                "--input",
+                str(provenance_only),
+                "--data-manifest",
+                str(provenance_manifest),
+                "--output-dir",
+                str(base / "provenance-only-out"),
+                "--run-mode",
+                "production",
+                "--value-mode",
+                "proportion",
+                "--formats",
+                "svg",
+                check=False,
+            )
+            self.assertEqual(provenance_result.returncode, 2)
+            self.assertIn(
+                "provenance-only modified copies",
+                provenance_result.stderr,
+            )
+
+            numeric_format_copy = base / "numeric-format-copy.csv"
+            numeric_format_copy.write_text(
+                DEMO.read_text(encoding="utf-8")
+                .replace("simulated,", "observed,")
+                .replace(",0.42\n", ",0.420\n", 1),
+                encoding="utf-8",
+            )
+            numeric_manifest = base / "numeric-format-production.json"
+            numeric_manifest.write_text(
+                json.dumps(
+                    {
+                        "synthetic": False,
+                        "production_use_allowed": True,
+                        "input_sha256": hashlib.sha256(
+                            numeric_format_copy.read_bytes()
+                        ).hexdigest(),
+                    }
+                ),
+                encoding="utf-8",
+            )
+            numeric_result = run(
+                str(RENDERER),
+                "--input",
+                str(numeric_format_copy),
+                "--data-manifest",
+                str(numeric_manifest),
+                "--output-dir",
+                str(base / "numeric-format-out"),
+                "--run-mode",
+                "production",
+                "--value-mode",
+                "proportion",
+                "--formats",
+                "svg",
+                check=False,
+            )
+            self.assertEqual(numeric_result.returncode, 2)
+            self.assertIn(
+                "provenance-only modified copies",
+                numeric_result.stderr,
+            )
+
+            renamed_role_copy = base / "renamed-role-copy.csv"
+            renamed_role_copy.write_text(
+                DEMO.read_text(encoding="utf-8")
+                .replace("simulated,", "observed,")
+                .replace("value", "measurement", 1),
+                encoding="utf-8",
+            )
+            renamed_manifest = base / "renamed-role-production.json"
+            renamed_manifest.write_text(
+                json.dumps(
+                    {
+                        "synthetic": False,
+                        "production_use_allowed": True,
+                        "input_sha256": hashlib.sha256(
+                            renamed_role_copy.read_bytes()
+                        ).hexdigest(),
+                    }
+                ),
+                encoding="utf-8",
+            )
+            renamed_result = run(
+                str(RENDERER),
+                "--input",
+                str(renamed_role_copy),
+                "--data-manifest",
+                str(renamed_manifest),
+                "--output-dir",
+                str(base / "renamed-role-out"),
+                "--run-mode",
+                "production",
+                "--value-mode",
+                "proportion",
+                "--value-col",
+                "measurement",
+                "--formats",
+                "svg",
+                check=False,
+            )
+            self.assertEqual(renamed_result.returncode, 2)
+            self.assertIn(
+                "provenance-only modified copies",
+                renamed_result.stderr,
+            )
 
     def test_production_requires_a_figure_contract(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
@@ -312,6 +496,10 @@ class CompositionRendererRuntimeTests(unittest.TestCase):
                 manifest["figure_contract"]["sha256"],
                 hashlib.sha256(contract_path.read_bytes()).hexdigest(),
             )
+            self.assertEqual(
+                manifest["figure_contract"]["lint"]["status"],
+                "PASS",
+            )
             delivery = run(
                 str(DELIVERY_VALIDATOR),
                 "--contract",
@@ -347,6 +535,39 @@ class CompositionRendererRuntimeTests(unittest.TestCase):
             )
             self.assertEqual(rejected.returncode, 2)
             self.assertIn("CLI formats do not match", rejected.stderr)
+
+    def test_production_contract_must_pass_canonical_final_gate(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            base = Path(temp)
+            input_path, manifest_path = self.write_production_input(base)
+            contract_path = self.write_figure_contract(base)
+            payload = json.loads(contract_path.read_text(encoding="utf-8"))
+            payload["claims"][0]["estimand_id"] = "E404"
+            contract_path.write_text(json.dumps(payload), encoding="utf-8")
+
+            rejected = run(
+                str(RENDERER),
+                "--input",
+                str(input_path),
+                "--data-manifest",
+                str(manifest_path),
+                "--figure-contract",
+                str(contract_path),
+                "--output-dir",
+                str(base / "out"),
+                "--run-mode",
+                "production",
+                "--value-mode",
+                "counts",
+                "--formats",
+                "svg",
+                check=False,
+            )
+
+            self.assertEqual(rejected.returncode, 2)
+            self.assertIn("SCIPLOT-CONTRACT-FINAL", rejected.stderr)
+            self.assertIn("CT-016", rejected.stderr)
+            self.assertFalse((base / "out").exists())
 
     def test_proportion_closure_failure_is_not_silently_normalized(self) -> None:
         with tempfile.TemporaryDirectory() as temp:

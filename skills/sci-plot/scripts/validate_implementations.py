@@ -206,6 +206,50 @@ def validate(index_path: Path) -> dict[str, Any]:
                     errors.append(
                         f"{implementation_id}: {filename} does not compile: {exc}"
                     )
+        shared_source_hashes = verification.get(
+            "shared_source_files_sha256", {}
+        )
+        if not isinstance(shared_source_hashes, dict):
+            errors.append(
+                f"{implementation_id}: shared_source_files_sha256 must be an object"
+            )
+            shared_source_hashes = {}
+        actual_shared_source_hashes: dict[str, str] = {}
+        for relative, expected in shared_source_hashes.items():
+            if not isinstance(relative, str) or not isinstance(expected, str):
+                errors.append(
+                    f"{implementation_id}: invalid shared source hash entry"
+                )
+                continue
+            try:
+                source_file = safe_skill_path(relative)
+            except ValueError as exc:
+                errors.append(f"{implementation_id}: {exc}")
+                continue
+            if not source_file.is_file():
+                errors.append(
+                    f"{implementation_id}: shared source file not found: {relative}"
+                )
+                continue
+            actual = sha256(source_file)
+            actual_shared_source_hashes[relative] = actual
+            if actual != expected:
+                errors.append(
+                    f"{implementation_id}: shared source hash mismatch for "
+                    f"{relative}"
+                )
+            if source_file.suffix == ".py":
+                try:
+                    compile(
+                        source_file.read_text(encoding="utf-8"),
+                        str(source_file),
+                        "exec",
+                    )
+                except SyntaxError as exc:
+                    errors.append(
+                        f"{implementation_id}: shared source {relative} does "
+                        f"not compile: {exc}"
+                    )
         for field in ("fixture", "fixture_manifest"):
             relative = verification.get(field)
             if (
@@ -257,6 +301,14 @@ def validate(index_path: Path) -> dict[str, Any]:
                     errors.append(
                         f"{implementation_id}: smoke report source-file hashes mismatch"
                     )
+                if (
+                    smoke.get("shared_source_files_sha256", {})
+                    != actual_shared_source_hashes
+                ):
+                    errors.append(
+                        f"{implementation_id}: smoke report shared-source hashes "
+                        "mismatch"
+                    )
                 if fixture.is_file() and smoke.get("fixture_sha256") != sha256(
                     fixture
                 ):
@@ -297,6 +349,7 @@ def validate(index_path: Path) -> dict[str, Any]:
                 "status": manifest["status"],
                 "entrypoint": str(entrypoint.relative_to(SKILL_ROOT)),
                 "source_sha256": actual_hash,
+                "shared_source_files_sha256": actual_shared_source_hashes,
                 "supported_task_phases": supported_phases,
             }
         )

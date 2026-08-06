@@ -1,0 +1,25 @@
+source_type,subject,group,timepoint,value
+simulated,C01,Control,Baseline,5.0
+simulated,C01,Control,Week 8,5.2
+simulated,C02,Control,Baseline,4.7
+simulated,C02,Control,Week 8,4.8
+simulated,C03,Control,Baseline,5.4
+simulated,C03,Control,Week 8,5.1
+simulated,C04,Control,Baseline,5.8
+simulated,C04,Control,Week 8,6.0
+simulated,C05,Control,Baseline,4.9
+simulated,C05,Control,Week 8,5.0
+simulated,C06,Control,Baseline,5.2
+simulated,C06,Control,Week 8,5.3
+simulated,T01,Treatment,Baseline,5.1
+simulated,T01,Treatment,Week 8,6.0
+simulated,T02,Treatment,Baseline,4.8
+simulated,T02,Treatment,Week 8,5.6
+simulated,T03,Treatment,Baseline,5.5
+simulated,T03,Treatment,Week 8,6.1
+simulated,T04,Treatment,Baseline,5.7
+simulated,T04,Treatment,Week 8,6.8
+simulated,T05,Treatment,Baseline,5.0
+simulated,T05,Treatment,Week 8,5.7
+simulated,T06,Treatment,Baseline,5.3
+simulated,T06,Treatment,Week 8,6.2

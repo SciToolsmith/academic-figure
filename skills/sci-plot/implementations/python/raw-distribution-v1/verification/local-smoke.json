@@ -1,0 +1,96 @@
+{
+  "schema_version": "sciplot.implementation-verification/v1",
+  "implementation_id": "raw-distribution-v1",
+  "implementation_version": "1.0.0",
+  "verified_on": "2026-08-06",
+  "source_sha256": "04a6d162a6e1575c076472c193bac58133c0fd83470eb7589737e8c076c2ff34",
+  "source_files_sha256": {
+    "render.py": "04a6d162a6e1575c076472c193bac58133c0fd83470eb7589737e8c076c2ff34"
+  },
+  "shared_source_files_sha256": {
+    "implementations/python/_shared/runtime.py": "bc9ed53c6c64f3cfb87790c094a5d9db6f06cb2390bff0b168e320e11c647d70"
+  },
+  "fixture_sha256": "fa1f781802545448e58e421984834c64cdd40fee43d11095480e16092d8441b4",
+  "fixture_manifest_sha256": "4f8883982523841da039900eb126d385beee943eba14e095c7b6ed59032dd62a",
+  "figure_contract_sha256": "86152bb215d2bde5a9fc3ad86e2749ca60b57e6f7247548ff71bb3b72d7bbe36",
+  "runtime": {
+    "python": "3.12.12",
+    "matplotlib": "3.10.8",
+    "platform": "macOS"
+  },
+  "command_profile": {
+    "run_mode": "smoke",
+    "group_order": [
+      "Control",
+      "Treatment 1",
+      "Treatment 2"
+    ],
+    "width_mm": 183,
+    "height_mm": 105,
+    "dpi": 300,
+    "figure_contract": "references/figure-contract.descriptive-distribution.example.json",
+    "formats": [
+      "svg",
+      "pdf",
+      "png"
+    ]
+  },
+  "artifacts": {
+    "distribution.svg": {
+      "sha256": "f7a77924450f51c9bbb9f90c7fe4f95dac0e8d2aabd6b7109b275b335ad8720a",
+      "bytes": 15773,
+      "artifact_qa": "PASS"
+    },
+    "distribution.pdf": {
+      "sha256": "ecad4233ab33ea84067967434c9b88013e03871863f47dc59476955d0639568f",
+      "bytes": 40120,
+      "artifact_qa": "PASS"
+    },
+    "distribution.png": {
+      "sha256": "c86dfcf145ffeafb890ac6e5078acc5ec91b91c65fce0fd484535e0ef1a1321c",
+      "bytes": 116023,
+      "artifact_qa": "PASS"
+    },
+    "analysis-table.csv": {
+      "sha256": "785c33d9d6134f7afa4cad3e52bb0b0d4da1c12323a5c6a88768e772d4a93185",
+      "bytes": 1605
+    },
+    "data-validation.json": {
+      "sha256": "abb18069fa78c48234ffc4e6a6212fa64c2a8a1af347eac53b774f2b4e1ecc27",
+      "bytes": 1156,
+      "status": "PASS"
+    }
+  },
+  "artifact_evidence": {
+    "delivery": {
+      "status": "PASS"
+    },
+    "svg_pdf_png": {
+      "status": "PASS",
+      "checks": {
+        "pass": 15,
+        "warn": 0,
+        "fail": 0
+      }
+    },
+    "unified_qa": {
+      "status": "PASS",
+      "checks": {
+        "pass": 42,
+        "warn": 0,
+        "fail": 0
+      }
+    }
+  },
+  "final_size_visual_review": {
+    "completed": true,
+    "result": "PASS",
+    "checks": [
+      "all 18 points visible and group colors stable",
+      "median and IQR marks readable without obscuring raw points",
+      "group labels and sample counts legible",
+      "synthetic watermark prominent",
+      "no visible clipping or overlap"
+    ]
+  }
+}

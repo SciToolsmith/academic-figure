@@ -1,0 +1,121 @@
+{
+  "schema_version": "sciplot.implementation/v1",
+  "id": "paired-change-v1",
+  "version": "1.0.0",
+  "status": "verified",
+  "backend": {
+    "language": "python",
+    "entrypoint": "render.py",
+    "requires": [
+      "Python >= 3.9",
+      "matplotlib >= 3.7"
+    ]
+  },
+  "source": {
+    "category": "sciplot-native",
+    "license": "Apache-2.0",
+    "case_influences": [
+      {
+        "id": "rf-0173",
+        "reuse_level": "principle-only",
+        "runtime_dependency_on_case_pack": false,
+        "borrowed_decisions": [
+          "preserve subject identity across observations",
+          "make complete-pair counts explicit"
+        ]
+      }
+    ]
+  },
+  "semantic_signature": {
+    "analysis_unit": "one declared subject",
+    "relationship": "paired two-timepoint change",
+    "input_structure": "two long-form rows per subject",
+    "evidence_goal": "show individual direction and heterogeneity of change",
+    "supported_task_phases": [
+      "exploratory",
+      "descriptive",
+      "presentation"
+    ],
+    "not_for": [
+      "three or more timepoints",
+      "incomplete pairs without a declared missing-data model",
+      "between-group effect estimates or causal claims"
+    ]
+  },
+  "input_contract": {
+    "required_roles": [
+      "subject",
+      "group",
+      "timepoint",
+      "value"
+    ],
+    "unique_key": [
+      "subject",
+      "timepoint"
+    ],
+    "timepoint_policy": "exactly two declared timepoints and a complete pair per subject",
+    "group_policy": "group must be constant within subject",
+    "nonfinite_policy": "fail"
+  },
+  "guards": [
+    "PC-INPUT-01 required columns and nonblank values",
+    "PC-KEY-01 unique subject-timepoint keys",
+    "PC-PAIR-01 exactly two complete observations per subject",
+    "PC-GROUP-01 stable group within subject",
+    "PC-VALUE-01 finite values and derived change",
+    "PC-DEMO-01 explicit data role, synthetic watermark, and production rejection of semantically equivalent bundled demo content"
+  ],
+  "cli_contract": {
+    "required": [
+      "--input",
+      "--data-manifest",
+      "--output-dir",
+      "--run-mode",
+      "--timepoint-order"
+    ],
+    "production_required": [
+      "--figure-contract"
+    ],
+    "column_bindings": [
+      "--subject-col",
+      "--group-col",
+      "--timepoint-col",
+      "--value-col"
+    ],
+    "physical_output": [
+      "--width-mm",
+      "--height-mm",
+      "--formats",
+      "--dpi"
+    ]
+  },
+  "outputs": {
+    "basename": "paired-change",
+    "formats": [
+      "svg",
+      "pdf",
+      "png"
+    ],
+    "analysis_table": "analysis-table.csv",
+    "data_validation": "data-validation.json",
+    "manifest": "paired-change.manifest.json",
+    "editable_svg_text": true,
+    "silent_tight_crop": false
+  },
+  "verification": {
+    "fixture": "examples/demo.csv",
+    "fixture_manifest": "examples/demo-data.json",
+    "figure_contract": "references/figure-contract.descriptive-paired.example.json",
+    "test_module": "tests/test_native_renderers_v12.py",
+    "source_sha256": "56811ecb9675ed911dad830fc364955462f4387310ce86f135b0715a9971057a",
+    "source_files_sha256": {
+      "render.py": "56811ecb9675ed911dad830fc364955462f4387310ce86f135b0715a9971057a"
+    },
+    "shared_source_files_sha256": {
+      "implementations/python/_shared/runtime.py": "bc9ed53c6c64f3cfb87790c094a5d9db6f06cb2390bff0b168e320e11c647d70"
+    },
+    "local_smoke_status": "passed-svg-pdf-png-2026-08-06",
+    "local_smoke_report": "verification/local-smoke.json",
+    "test_command": "python -m unittest tests/test_native_renderers_v12.py -v"
+  }
+}

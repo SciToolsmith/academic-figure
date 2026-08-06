@@ -1,0 +1,188 @@
+{
+  "contract_version": 1,
+  "task": {
+    "mode": "create",
+    "phase": "descriptive",
+    "profile": "publication",
+    "execution_state": "proceed",
+    "requested_change": null,
+    "meaning_locked": []
+  },
+  "question": {
+    "text": "What is the observed response distribution within each declared group?",
+    "population_or_system": "the 18 observed study units in distribution.csv",
+    "comparison_or_exposure": "declared groups shown separately without an inferential contrast",
+    "outcome": "response in declared units"
+  },
+  "estimands": [
+    {
+      "id": "E1",
+      "population_or_system": "the 18 observed study units in distribution.csv",
+      "analysis_unit": "study unit",
+      "outcome": "response in declared units",
+      "timepoint_or_horizon": "the single recorded observation window",
+      "contrast_or_exposure": "each declared group separately; no between-group contrast",
+      "summary_measure": "empirical distribution with group median and interquartile range",
+      "effect_scale": "original response units",
+      "adjustment_or_aggregation": "no weighting or covariate adjustment; summaries are calculated within group",
+      "missing_data_policy": "rows with missing group or response are excluded and counted; the example fixture has none"
+    }
+  ],
+  "claims": [
+    {
+      "id": "C1",
+      "estimand_id": "E1",
+      "statement": "The figure describes every observed response and the median and interquartile range within each declared group.",
+      "level": "descriptive",
+      "status": "supported",
+      "scope": "the 18 included study units",
+      "not_claimed": "The groups differ statistically or causally."
+    }
+  ],
+  "evidence": {
+    "primary": [
+      "one response value and one declared group for each included study unit"
+    ],
+    "supporting": [],
+    "controls": [],
+    "diagnostics": [
+      "finite-value, group-membership, and row-count checks"
+    ],
+    "context": []
+  },
+  "panels": [
+    {
+      "id": "a",
+      "estimand_id": "E1",
+      "question": "How are observed responses distributed within each group?",
+      "evidence_role": "primary",
+      "supports_claims": [
+        "C1"
+      ],
+      "data_source": "distribution.csv",
+      "analysis_unit": "study unit",
+      "replicate_unit": "study unit",
+      "fields": {
+        "x": "group",
+        "y": "value",
+        "group": "group",
+        "facet": null,
+        "label": "observation_id"
+      },
+      "quantity_and_units": "observed response in declared units",
+      "encoding": {
+        "geometry": "jittered raw points with median and interquartile-range summary",
+        "position": "declared group on x and observed response on y",
+        "color": "one stable accessible color per declared group",
+        "size": "constant raw-point size",
+        "order": "declared group order",
+        "scale_and_limits": "linear scale spanning all observed responses with padding"
+      },
+      "statistics": {
+        "center": "group median",
+        "uncertainty": "interquartile range as descriptive spread",
+        "test_or_model": "not-applicable: no inferential test is performed",
+        "multiplicity": "not-applicable: no hypothesis tests are performed",
+        "n_definition": "number of included study units in each group"
+      },
+      "unique_contribution": "shows the full observed distribution without replacing raw values by a summary alone",
+      "known_risks": [
+        "overplotting can hide coincident values",
+        "descriptive summaries do not establish a population difference"
+      ]
+    }
+  ],
+  "data_integrity": {
+    "expected_rows_or_items": 18,
+    "included_rows_or_items": 18,
+    "exclusions": [],
+    "missingness": "the example fixture contains no missing observation_id, group, or value",
+    "transformations": [],
+    "aggregation": "raw rows remain visible; median and interquartile range are calculated within declared group",
+    "sampling": "none",
+    "category_order": {
+      "group": [
+        "Control",
+        "Treatment 1",
+        "Treatment 2"
+      ]
+    },
+    "precomputed_results": []
+  },
+  "traceability": [
+    {
+      "claim_id": "C1",
+      "supported_by_panels": [
+        "a"
+      ],
+      "source_fields_or_results": [
+        "observation_id",
+        "group",
+        "value",
+        "group median",
+        "group interquartile range"
+      ],
+      "limitations": [
+        "the contract makes no inferential or causal comparison"
+      ]
+    }
+  ],
+  "visual_system": {
+    "reading_order": "panel a",
+    "emphasis": "raw observations first, descriptive summary second",
+    "shared_scales": [],
+    "color_semantics": {
+      "group": "stable across raw points and summary marks"
+    },
+    "accessibility_checks": [
+      "color-vision",
+      "grayscale",
+      "contrast"
+    ]
+  },
+  "target": {
+    "audience": "scientific readers",
+    "destination": "manuscript",
+    "width_mm": 183,
+    "height_mm": 105,
+    "formats": [
+      "svg",
+      "pdf",
+      "png"
+    ],
+    "primary_format": "svg",
+    "preview_format": "png",
+    "editable_text_required": true,
+    "resolution_dpi": 300
+  },
+  "implementation": {
+    "backend_by_panel": {
+      "a": "python"
+    },
+    "final_assembly_owner": "python",
+    "native_implementation": {
+      "id": "raw-distribution-v1",
+      "version": "1.0.0",
+      "supported_task_phase": "descriptive"
+    },
+    "random_seed": 20260806
+  },
+  "review_risks": [
+    {
+      "risk": "coincident points may be visually hidden",
+      "affected_claims_or_panels": [
+        "C1",
+        "a"
+      ],
+      "mitigation": "use deterministic bounded jitter and verify all 18 rows in the analysis table",
+      "status": "mitigated"
+    }
+  ],
+  "acceptance": [
+    "all 18 included rows appear once in analysis-table.csv and as raw marks",
+    "group medians and interquartile ranges reproduce the analysis table",
+    "SVG, PDF, and PNG match the declared physical size and PNG DPI",
+    "the final SVG has editable text and no clipping"
+  ],
+  "unknowns": []
+}

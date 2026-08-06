@@ -41,6 +41,12 @@ For a small cosmetic revision, use a minimal contract and avoid redesigning unre
    - Read [figure-contract.md](references/figure-contract.md).
    - Write the smallest contract appropriate to the route before choosing a layout.
    - Ask only questions that block a scientifically valid result; mark non-blocking gaps as `unknown` and disclose them.
+   - For each publication-confirmatory quantitative claim, declare its
+     estimand before rendering: population or system, analysis unit, outcome
+     and horizon, contrast or exposure, summary measure and effect scale,
+     adjustment or aggregation, and missing-data policy. Link the claim and
+     every primary or supporting panel that bears on it to the same
+     `estimand_id`.
    - Set the execution state to `proceed`, `prototype-only`, or `blocked`.
      Never produce a production figure while a blocking scientific unknown
      remains.
@@ -82,6 +88,10 @@ For a small cosmetic revision, use a minimal contract and avoid redesigning unre
      when the provisional contract contains enough fields to judge
      compatibility. While blocked, catalog inspection may remain read-only,
      but implementation selection and execution must wait.
+   - A verified implementation is optional acceleration, not a capability
+     boundary. If none matches the analysis unit, relationship, input
+     structure, evidence goal, and task phase, record `build-new` and continue
+     from the Figure Contract.
    - Choose Python, R, or a documented mixed workflow per task; do not persist a global backend preference.
    - Use one declared owner for final multi-panel assembly and retain panel-level provenance.
    - Treat bundled case code as inspectable reference source, not as a
@@ -118,6 +128,10 @@ pack and `scripts/generate_case_demo.py` only for supported synthetic smoke
 tests.
 Use `scripts/validate_implementations.py` before running a bundled native
 implementation; its presence never overrides the semantic gate.
+Use `scripts/sciplot_doctor.py` when local Python or native-renderer
+dependencies are uncertain; it diagnoses without rendering. The
+index-driven `scripts/run_implementation_smoke.py` is a maintainer and release
+gate, not a substitute for per-figure scientific and final-size visual QA.
 These tools make deterministic checks; none replaces scientific or final-size
 visual judgment.
 Script paths in this skill are relative to the installed `sci-plot` directory.

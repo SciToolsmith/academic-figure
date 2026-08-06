@@ -14,6 +14,7 @@ from typing import Any
 SCHEMA = "sciplot.semantic-diff/v1"
 SEMANTIC_PREFIXES = (
     "question",
+    "estimands",
     "claims",
     "data_integrity",
     "traceability",
@@ -22,6 +23,7 @@ SEMANTIC_PANEL_FIELDS = {
     "question",
     "evidence_role",
     "supports_claims",
+    "estimand_id",
     "data_source",
     "analysis_unit",
     "replicate_unit",

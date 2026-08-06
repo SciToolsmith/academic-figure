@@ -1,0 +1,201 @@
+{
+  "contract_version": 1,
+  "task": {
+    "mode": "create",
+    "phase": "descriptive",
+    "profile": "publication",
+    "execution_state": "proceed",
+    "requested_change": null,
+    "meaning_locked": []
+  },
+  "question": {
+    "text": "What changes are observed within each complete subject from Baseline to Week 8 in each declared group?",
+    "population_or_system": "the 12 study units with two measurements in paired.csv",
+    "comparison_or_exposure": "Week 8 versus Baseline within subject, shown separately by declared group",
+    "outcome": "response in declared units"
+  },
+  "estimands": [
+    {
+      "id": "E1",
+      "population_or_system": "the 12 complete study units in paired.csv",
+      "analysis_unit": "study unit",
+      "outcome": "response in declared units",
+      "timepoint_or_horizon": "change from Baseline to Week 8",
+      "contrast_or_exposure": "Week 8 minus Baseline within subject, stratified by declared group",
+      "summary_measure": "individual observed change and median within-group change",
+      "effect_scale": "difference in original response units; positive means an increase at Week 8",
+      "adjustment_or_aggregation": "one difference per complete subject; the median is calculated separately within each declared group",
+      "missing_data_policy": "complete-pair description; a unit missing either timepoint is excluded and counted"
+    }
+  ],
+  "claims": [
+    {
+      "id": "C1",
+      "estimand_id": "E1",
+      "statement": "The figure describes all 12 complete-subject changes and the median change within each declared group.",
+      "level": "descriptive",
+      "status": "supported",
+      "scope": "the complete pairs supplied in paired.csv",
+      "not_claimed": "The observed change is statistically significant, generalizes beyond the included units, or was caused by an intervention."
+    }
+  ],
+  "evidence": {
+    "primary": [
+      "Baseline and Week 8 response linked by subject"
+    ],
+    "supporting": [],
+    "controls": [],
+    "diagnostics": [
+      "exactly one Baseline and one Week 8 row per subject",
+      "finite-value and complete-pair checks"
+    ],
+    "context": []
+  },
+  "panels": [
+    {
+      "id": "a",
+      "estimand_id": "E1",
+      "question": "What direction and magnitude of change does each complete pair show?",
+      "evidence_role": "primary",
+      "supports_claims": [
+        "C1"
+      ],
+      "data_source": "paired.csv",
+      "analysis_unit": "study unit",
+      "replicate_unit": "study unit",
+      "fields": {
+        "x": "timepoint",
+        "y": "value",
+        "group": "group",
+        "facet": "group",
+        "label": "subject"
+      },
+      "quantity_and_units": "response and within-unit change in declared units",
+      "encoding": {
+        "geometry": "raw paired points connected within study unit with a descriptive change summary",
+        "position": "Baseline and Week 8 on x, observed response on y",
+        "color": "neutral points and lines with one accent for the change summary",
+        "size": "constant raw-point and line size",
+        "order": "Baseline then Week 8",
+        "scale_and_limits": "linear response scale spanning every observed value with padding"
+      },
+      "statistics": {
+        "center": "median Week 8-minus-Baseline change within each group",
+        "uncertainty": "not-applicable: no inferential or spread interval is drawn",
+        "test_or_model": "not-applicable: no inferential paired test is performed",
+        "multiplicity": "not-applicable: no hypothesis tests are performed",
+        "n_definition": "12 subjects with both Baseline and Week 8 values"
+      },
+      "unique_contribution": "preserves pairing, direction, and magnitude for every complete study unit",
+      "known_risks": [
+        "connecting rows by display order instead of subject would corrupt pairing",
+        "complete-pair summaries do not describe units with a missing timepoint"
+      ]
+    }
+  ],
+  "data_integrity": {
+    "expected_rows_or_items": 24,
+    "included_rows_or_items": 24,
+    "exclusions": [],
+    "missingness": "the example fixture has one Baseline and one Week 8 value for every subject",
+    "transformations": [
+      {
+        "operation": "calculate Week 8 minus Baseline after pivoting by subject",
+        "guard": "require exactly one finite row per subject and timepoint and a stable group before subtraction",
+        "output": "paired_change"
+      }
+    ],
+    "aggregation": "one paired_change per subject; median change is summarized separately within Control and Treatment",
+    "sampling": "none",
+    "category_order": {
+      "group": [
+        "Control",
+        "Treatment"
+      ],
+      "timepoint": [
+        "Baseline",
+        "Week 8"
+      ]
+    },
+    "precomputed_results": []
+  },
+  "traceability": [
+    {
+      "claim_id": "C1",
+      "supported_by_panels": [
+        "a"
+      ],
+      "source_fields_or_results": [
+        "subject",
+        "group",
+        "timepoint",
+        "value",
+        "paired_change",
+        "median paired_change",
+        "within-group median paired_change"
+      ],
+      "limitations": [
+        "description is restricted to complete pairs and contains no inferential test"
+      ]
+    }
+  ],
+  "visual_system": {
+    "reading_order": "panel a",
+    "emphasis": "within-unit trajectories first, descriptive change summary second",
+    "shared_scales": [],
+    "color_semantics": {
+      "accent": "descriptive summary only; it does not encode significance"
+    },
+    "accessibility_checks": [
+      "color-vision",
+      "grayscale",
+      "contrast"
+    ]
+  },
+  "target": {
+    "audience": "scientific readers",
+    "destination": "manuscript",
+    "width_mm": 183,
+    "height_mm": 105,
+    "formats": [
+      "svg",
+      "pdf",
+      "png"
+    ],
+    "primary_format": "svg",
+    "preview_format": "png",
+    "editable_text_required": true,
+    "resolution_dpi": 300
+  },
+  "implementation": {
+    "backend_by_panel": {
+      "a": "python"
+    },
+    "final_assembly_owner": "python",
+    "native_implementation": {
+      "id": "paired-change-v1",
+      "version": "1.0.0",
+      "supported_task_phase": "descriptive"
+    },
+    "random_seed": null
+  },
+  "review_risks": [
+    {
+      "risk": "pair identity could be lost during reshape or plotting",
+      "affected_claims_or_panels": [
+        "C1",
+        "a"
+      ],
+      "mitigation": "validate unique subject-timepoint keys and retain subject in analysis-table.csv",
+      "status": "mitigated"
+    }
+  ],
+  "acceptance": [
+    "all 12 pair IDs have exactly two source rows and one calculated paired_change",
+    "every line connects values with the same subject",
+    "the descriptive within-group median change reproduces analysis-table.csv",
+    "SVG, PDF, and PNG match the declared physical size and PNG DPI",
+    "the final SVG has editable text and no clipping"
+  ],
+  "unknowns": []
+}

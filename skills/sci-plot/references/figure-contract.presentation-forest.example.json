@@ -1,0 +1,228 @@
+{
+  "contract_version": 1,
+  "task": {
+    "mode": "create",
+    "phase": "presentation",
+    "profile": "publication",
+    "execution_state": "proceed",
+    "requested_change": null,
+    "meaning_locked": [
+      "precomputed estimate values",
+      "precomputed interval bounds",
+      "effect direction and null value",
+      "row order and labels"
+    ]
+  },
+  "question": {
+    "text": "What finalized effect estimates and intervals were supplied for six prespecified analysis populations?",
+    "population_or_system": "six prespecified analysis populations represented in demo.csv",
+    "comparison_or_exposure": "treatment versus reference within each analysis population",
+    "outcome": "the declared continuous response at week 8"
+  },
+  "estimands": [
+    {
+      "id": "E1",
+      "population_or_system": "each of the six prespecified analysis populations represented in demo.csv",
+      "analysis_unit": "analysis-population-specific finalized model contrast",
+      "outcome": "declared continuous response at week 8",
+      "timepoint_or_horizon": "week 8",
+      "contrast_or_exposure": "treatment minus reference within each declared analysis population",
+      "summary_measure": "analysis-population-specific adjusted mean difference with supplied 95% confidence interval",
+      "effect_scale": "difference in original response units; zero is the null and positive favors treatment under the declared direction",
+      "adjustment_or_aggregation": "use the finalized row-specific adjusted estimates as supplied; do not pool subgroups or refit a model",
+      "missing_data_policy": "inherit the finalized source analyses; the presentation input contains six complete estimate rows"
+    }
+  ],
+  "claims": [
+    {
+      "id": "C1",
+      "estimand_id": "E1",
+      "statement": "The forest panel reproduces the six finalized adjusted mean differences and their supplied 95% confidence intervals.",
+      "level": "associational",
+      "status": "qualified",
+      "scope": "the six precomputed rows and the source analyses they represent",
+      "not_claimed": "Subgroups differ from one another, treatment effects are causal, or a pooled effect was estimated."
+    }
+  ],
+  "evidence": {
+    "primary": [
+      "six finalized point estimates with lower and upper confidence limits"
+    ],
+    "supporting": [],
+    "controls": [],
+    "diagnostics": [
+      "finite-value, bound-order, null-value, and row-order checks"
+    ],
+    "context": [
+      "effect direction and null value supplied by the finalized analysis record"
+    ]
+  },
+  "panels": [
+    {
+      "id": "a",
+      "estimand_id": "E1",
+      "question": "Where do the six finalized estimates and intervals lie relative to the declared null?",
+      "evidence_role": "primary",
+      "supports_claims": [
+        "C1"
+      ],
+      "data_source": "demo.csv",
+      "analysis_unit": "analysis-population-specific finalized model contrast",
+      "replicate_unit": "precomputed result; raw replication is not represented",
+      "fields": {
+        "x": "estimate",
+        "y": "label",
+        "group": "group",
+        "facet": null,
+        "label": "label"
+      },
+      "quantity_and_units": "adjusted mean difference and 95% confidence limits in original response units",
+      "encoding": {
+        "geometry": "point estimate with horizontal confidence interval and null reference line",
+        "position": "estimate and interval on x, declared analysis-population row on y",
+        "color": "one neutral interval color with accessible emphasis for point estimates",
+        "size": "constant point and interval-line size",
+        "order": "source row order",
+        "scale_and_limits": "linear effect scale containing all supplied interval bounds and zero"
+      },
+      "statistics": {
+        "center": "supplied adjusted mean difference",
+        "uncertainty": "supplied 95% confidence interval",
+        "test_or_model": "not-applicable: the presentation renderer does not refit or test a model",
+        "multiplicity": "not evaluated by the renderer; retain the source analysis interpretation",
+        "n_definition": "one finalized model contrast per displayed analysis-population row"
+      },
+      "unique_contribution": "presents magnitude, direction, precision, and the declared null without recomputing inference",
+      "known_risks": [
+        "reversing the effect direction would invert interpretation",
+        "intervals should not be treated as between-population comparison tests"
+      ]
+    }
+  ],
+  "data_integrity": {
+    "expected_rows_or_items": 6,
+    "included_rows_or_items": 6,
+    "exclusions": [],
+    "missingness": "all six source rows contain a label, estimate, lower bound, and upper bound",
+    "transformations": [],
+    "aggregation": "none; each finalized analysis-population result remains a separate row",
+    "sampling": "none",
+    "category_order": {
+      "label": [
+        "All participants",
+        "Age 65 or younger",
+        "Older than 65",
+        "Female",
+        "Male",
+        "High baseline score"
+      ],
+      "group": [
+        "Overall",
+        "Age",
+        "Sex",
+        "Baseline score"
+      ]
+    },
+    "precomputed_results": [
+      "label",
+      "estimate",
+      "group",
+      "lower",
+      "upper",
+      "reference_value"
+    ]
+  },
+  "traceability": [
+    {
+      "claim_id": "C1",
+      "supported_by_panels": [
+        "a"
+      ],
+      "source_fields_or_results": [
+        "label",
+        "estimate",
+        "group",
+        "lower",
+        "upper",
+        "reference_value"
+      ],
+      "limitations": [
+        "the renderer verifies and presents supplied results but does not validate the upstream model or multiplicity strategy"
+      ]
+    }
+  ],
+  "visual_system": {
+    "reading_order": "top-to-bottom source row order, then left-to-right estimate scale",
+    "emphasis": "point estimates and intervals relative to the null",
+    "shared_scales": [
+      "one linear effect scale across all six rows"
+    ],
+    "color_semantics": {
+      "accent": "point-estimate emphasis only; color does not encode significance"
+    },
+    "accessibility_checks": [
+      "color-vision",
+      "grayscale",
+      "contrast"
+    ]
+  },
+  "target": {
+    "audience": "scientific readers",
+    "destination": "presentation",
+    "width_mm": 183,
+    "height_mm": 105,
+    "formats": [
+      "svg",
+      "pdf",
+      "png"
+    ],
+    "primary_format": "svg",
+    "preview_format": "png",
+    "editable_text_required": true,
+    "resolution_dpi": 300
+  },
+  "implementation": {
+    "backend_by_panel": {
+      "a": "python"
+    },
+    "final_assembly_owner": "python",
+    "native_implementation": {
+      "id": "effect-forest-v1",
+      "version": "1.0.0",
+      "supported_task_phase": "presentation",
+      "semantic_bindings": {
+        "column_roles": {
+          "label": "label",
+          "group": "group",
+          "estimate": "estimate",
+          "lower": "lower",
+          "upper": "upper"
+        },
+        "effect_scale": "adjusted mean difference",
+        "interval_label": "95% confidence interval",
+        "reference_value": 0,
+        "x_label": "Adjusted mean difference (declared units)"
+      }
+    },
+    "random_seed": null
+  },
+  "review_risks": [
+    {
+      "risk": "viewers may infer between-population differences from overlap or non-overlap of intervals",
+      "affected_claims_or_panels": [
+        "C1",
+        "a"
+      ],
+      "mitigation": "state that no between-population comparison test or pooled estimate is added and avoid significance color encoding",
+      "status": "mitigated"
+    }
+  ],
+  "acceptance": [
+    "all six source rows retain their exact labels, order, estimates, and interval bounds",
+    "the null line is at zero and the declared effect direction is stated",
+    "no pooled estimate, p-value, significance symbol, or between-population comparison claim is introduced",
+    "SVG, PDF, and PNG match the declared physical size and PNG DPI",
+    "the final SVG has editable text and no clipping"
+  ],
+  "unknowns": []
+}

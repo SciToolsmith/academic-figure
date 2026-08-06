@@ -341,6 +341,7 @@ def render(
                     "sha256": data["figure_contract"]["_sha256"],
                     "phase": data["figure_contract"]["task"]["phase"],
                     "formats": data["figure_contract"]["target"]["formats"],
+                    "lint": data["figure_contract"].get("_contract_lint"),
                 }
                 if data.get("figure_contract")
                 else None
@@ -476,7 +477,19 @@ def main() -> int:
         if not input_path.is_file():
             raise ValueError(f"CB-INPUT-01 input file not found: {input_path}")
         data_manifest = load_data_manifest(
-            args.data_manifest, input_path, args.run_mode
+            args.data_manifest,
+            input_path,
+            args.run_mode,
+            bundled_demo_path=(
+                Path(__file__).resolve().parent / "examples" / "demo.csv"
+            ),
+            semantic_column_bindings={
+                "sample": args.sample_col,
+                "facet": args.facet_col,
+                "category": args.category_col,
+                "value": args.value_col,
+            },
+            numeric_semantic_roles=["value"],
         )
         data = read_and_validate(args, data_manifest)
         if args.run_mode == "production" and args.figure_contract is None:
@@ -494,6 +507,7 @@ def main() -> int:
                 dpi=args.dpi,
                 rows=data["rows"],
                 implementation_id=IMPLEMENTATION_ID,
+                implementation_version=IMPLEMENTATION_VERSION,
             )
             if args.figure_contract is not None
             else None

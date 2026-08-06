@@ -1,0 +1,124 @@
+{
+  "schema_version": "sciplot.implementation/v1",
+  "id": "effect-forest-v1",
+  "version": "1.0.0",
+  "status": "verified",
+  "backend": {
+    "language": "python",
+    "entrypoint": "render.py",
+    "requires": [
+      "Python >= 3.9",
+      "matplotlib >= 3.7"
+    ]
+  },
+  "source": {
+    "category": "sciplot-native",
+    "license": "Apache-2.0",
+    "case_influences": [
+      {
+        "id": "rf-0071",
+        "reuse_level": "principle-only",
+        "runtime_dependency_on_case_pack": false,
+        "borrowed_decisions": [
+          "visually prioritize effect magnitude and uncertainty",
+          "use an explicit no-effect reference"
+        ]
+      }
+    ]
+  },
+  "semantic_signature": {
+    "analysis_unit": "one declared precomputed estimate",
+    "relationship": "effect estimate plus interval",
+    "input_structure": "one row per estimate",
+    "evidence_goal": "compare magnitude, direction, and uncertainty without recomputing results",
+    "supported_task_phases": [
+      "confirmatory",
+      "presentation"
+    ],
+    "not_for": [
+      "raw observations",
+      "on-the-fly statistical estimation",
+      "intervals whose definition or effect scale is unknown"
+    ]
+  },
+  "input_contract": {
+    "required_roles": [
+      "label",
+      "group",
+      "estimate",
+      "lower",
+      "upper"
+    ],
+    "unique_key": [
+      "label"
+    ],
+    "interval_policy": "finite lower <= estimate <= upper",
+    "semantic_policy": "distinct estimate/lower/upper column roles plus effect scale, interval definition, order, reference, and axis label are bound to the Figure Contract",
+    "maximum_rows_default": 30
+  },
+  "guards": [
+    "EF-INPUT-01 required columns and nonblank labels",
+    "EF-KEY-01 globally unique effect labels",
+    "EF-VALUE-01 finite estimates and bounds",
+    "EF-INTERVAL-01 estimate lies within interval",
+    "EF-ORDER-01 declared label and group order exactly cover inputs",
+    "EF-SEMANTIC-01 distinct numeric column roles and finite declared reference",
+    "EF-CONTRACT-01 scientific semantics match native_implementation.semantic_bindings",
+    "EF-DEMO-01 explicit data role, synthetic watermark, and production rejection of semantically equivalent bundled demo content"
+  ],
+  "cli_contract": {
+    "required": [
+      "--input",
+      "--data-manifest",
+      "--output-dir",
+      "--run-mode",
+      "--effect-scale",
+      "--interval-label"
+    ],
+    "production_required": [
+      "--figure-contract"
+    ],
+    "column_bindings": [
+      "--label-col",
+      "--group-col",
+      "--estimate-col",
+      "--lower-col",
+      "--upper-col"
+    ],
+    "physical_output": [
+      "--width-mm",
+      "--height-mm",
+      "--formats",
+      "--dpi"
+    ]
+  },
+  "outputs": {
+    "basename": "effect-forest",
+    "formats": [
+      "svg",
+      "pdf",
+      "png"
+    ],
+    "analysis_table": "analysis-table.csv",
+    "data_validation": "data-validation.json",
+    "manifest": "effect-forest.manifest.json",
+    "editable_svg_text": true,
+    "silent_tight_crop": false
+  },
+  "verification": {
+    "fixture": "examples/demo.csv",
+    "fixture_manifest": "examples/demo-data.json",
+    "figure_contract": "references/figure-contract.presentation-forest.example.json",
+    "test_module": "tests/test_native_renderers_v12.py",
+    "source_sha256": "b547f4e065b69582d595d0147e7146006363f03c6df8c59e19ceb413f763f87f",
+    "source_files_sha256": {
+      "render.py": "b547f4e065b69582d595d0147e7146006363f03c6df8c59e19ceb413f763f87f"
+    },
+    "shared_source_files_sha256": {
+      "implementations/python/_shared/runtime.py": "bc9ed53c6c64f3cfb87790c094a5d9db6f06cb2390bff0b168e320e11c647d70"
+    },
+    "local_smoke_status": "passed-svg-pdf-png-2026-08-06",
+    "local_smoke_report": "verification/local-smoke.json",
+    "test_command": "python -m unittest tests/test_native_renderers_v12.py -v"
+  }
+}

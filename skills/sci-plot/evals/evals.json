@@ -1,5 +1,171 @@
 {
+  "schema": "sciplot.eval-catalog/v2",
+  "catalog_version": 2,
   "skill_name": "sci-plot",
+  "evaluation_boundary": {
+    "deterministic": "Repository-local probes execute allowlisted, read-only SciPlot helpers and assert directly observed JSON output.",
+    "behavioral": "Behavioral evals require a separately produced external-agent result package. This runner validates coverage, assertion status, evidence, and catalog binding; it does not invoke or impersonate an agent.",
+    "runner_invokes_external_agent": false
+  },
+  "protocol": {
+    "runner": "scripts/run_evals.py",
+    "behavioral_results_schema": "sciplot.behavioral-results/v1",
+    "report_schema": "sciplot.eval-report/v1",
+    "expected_assertion_id_template": "expected-{position:02d}"
+  },
+  "deterministic_probes": [
+    {
+      "id": "probe-no-suitable-case",
+      "description": "An unrelated topology query returns the named no-suitable-case outcome.",
+      "script": "scripts/rank_cases.py",
+      "args": [
+        "--query",
+        "二维晶体能带拓扑相变的证据图",
+        "--json"
+      ],
+      "expected_exit": 0,
+      "assertions": [
+        {
+          "id": "named-empty-outcome",
+          "pointer": "/retrieval_status",
+          "operator": "equals",
+          "expected": "no-suitable-case"
+        },
+        {
+          "id": "no-forced-match",
+          "pointer": "/matches",
+          "operator": "equals",
+          "expected": []
+        },
+        {
+          "id": "principle-first-action",
+          "pointer": "/recommended_action",
+          "operator": "equals",
+          "expected": "continue-principle-first-build-new"
+        }
+      ]
+    },
+    {
+      "id": "probe-conditional-case-separation",
+      "description": "A conditional geospatial case remains repair-required instead of becoming a production-ready match.",
+      "script": "scripts/rank_cases.py",
+      "args": [
+        "--query",
+        "省级发病率的空间差异",
+        "--json"
+      ],
+      "expected_exit": 0,
+      "assertions": [
+        {
+          "id": "repair-required-outcome",
+          "pointer": "/retrieval_status",
+          "operator": "equals",
+          "expected": "repair-required-only"
+        },
+        {
+          "id": "conditional-case-id",
+          "pointer": "/repair_required_candidates/0/id",
+          "operator": "equals",
+          "expected": "rf-0159"
+        },
+        {
+          "id": "not-production-ready",
+          "pointer": "/has_production_ready_match",
+          "operator": "equals",
+          "expected": false
+        }
+      ]
+    },
+    {
+      "id": "probe-cjk-survival-retrieval",
+      "description": "A Chinese survival query retrieves the admitted Kaplan-Meier case.",
+      "script": "scripts/rank_cases.py",
+      "args": [
+        "--query",
+        "生存曲线删失和风险人数",
+        "--json"
+      ],
+      "expected_exit": 0,
+      "assertions": [
+        {
+          "id": "matched-outcome",
+          "pointer": "/retrieval_status",
+          "operator": "equals",
+          "expected": "matched"
+        },
+        {
+          "id": "survival-case-first",
+          "pointer": "/matches/0/id",
+          "operator": "equals",
+          "expected": "rf-0018"
+        },
+        {
+          "id": "production-ready",
+          "pointer": "/has_production_ready_match",
+          "operator": "equals",
+          "expected": true
+        }
+      ]
+    },
+    {
+      "id": "probe-descriptive-contract-final",
+      "description": "The shipped descriptive composition contract passes its final semantic gate.",
+      "script": "scripts/validate_contract.py",
+      "args": [
+        "references/figure-contract.descriptive-composition.example.json",
+        "--stage",
+        "final"
+      ],
+      "expected_exit": 0,
+      "assertions": [
+        {
+          "id": "contract-pass",
+          "pointer": "/status",
+          "operator": "equals",
+          "expected": "PASS"
+        },
+        {
+          "id": "final-stage",
+          "pointer": "/stage",
+          "operator": "equals",
+          "expected": "final"
+        },
+        {
+          "id": "no-contract-failures",
+          "pointer": "/summary/fail",
+          "operator": "equals",
+          "expected": 0
+        }
+      ]
+    },
+    {
+      "id": "probe-native-implementation-index",
+      "description": "The native implementation index and its verification evidence validate.",
+      "script": "scripts/validate_implementations.py",
+      "args": [],
+      "expected_exit": 0,
+      "assertions": [
+        {
+          "id": "implementation-index-valid",
+          "pointer": "/status",
+          "operator": "equals",
+          "expected": "valid"
+        },
+        {
+          "id": "verified-composition-renderer",
+          "pointer": "/implementations/0/id",
+          "operator": "equals",
+          "expected": "composition-bars-v1"
+        },
+        {
+          "id": "verified-status",
+          "pointer": "/implementations/0/status",
+          "operator": "equals",
+          "expected": "verified"
+        }
+      ]
+    }
+  ],
   "evals": [
     {
       "id": "create-publication-figure-zh",

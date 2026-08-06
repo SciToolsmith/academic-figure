@@ -1,0 +1,19 @@
+source_type,observation_id,group,value
+simulated,A01,Control,4.2
+simulated,A02,Control,5.1
+simulated,A03,Control,4.8
+simulated,A04,Control,5.7
+simulated,A05,Control,4.5
+simulated,A06,Control,5.4
+simulated,B01,Treatment 1,5.0
+simulated,B02,Treatment 1,6.1
+simulated,B03,Treatment 1,5.8
+simulated,B04,Treatment 1,6.6
+simulated,B05,Treatment 1,5.4
+simulated,B06,Treatment 1,6.3
+simulated,C01,Treatment 2,6.2
+simulated,C02,Treatment 2,7.0
+simulated,C03,Treatment 2,6.7
+simulated,C04,Treatment 2,7.5
+simulated,C05,Treatment 2,6.4
+simulated,C06,Treatment 2,7.2

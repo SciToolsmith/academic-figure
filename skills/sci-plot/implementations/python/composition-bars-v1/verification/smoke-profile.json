@@ -1,0 +1,30 @@
+{
+  "schema_version": "sciplot.smoke-profile/v1",
+  "argv": [
+    "render.py",
+    "--input",
+    "implementations/python/composition-bars-v1/examples/demo.csv",
+    "--data-manifest",
+    "implementations/python/composition-bars-v1/examples/demo-data.json",
+    "--figure-contract",
+    "references/figure-contract.descriptive-composition.example.json",
+    "--output-dir",
+    "{output_dir}",
+    "--run-mode",
+    "smoke",
+    "--value-mode",
+    "proportion",
+    "--facet-order",
+    "Day 0,Day 7",
+    "--category-order",
+    "Alpha,Beta,Gamma,Other",
+    "--formats",
+    "svg,pdf,png",
+    "--width-mm",
+    "183",
+    "--height-mm",
+    "105",
+    "--dpi",
+    "300"
+  ]
+}

@@ -5,11 +5,13 @@ from __future__ import annotations
 import argparse
 import csv
 import hashlib
+import importlib.util
 import json
 import math
 import re
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 
 DEFAULT_COLORS = (
@@ -28,6 +30,7 @@ DEFAULT_COLORS = (
 )
 ALLOWED_FORMATS = ("svg", "pdf", "png")
 SUPPORTED_TASK_PHASES = ("descriptive", "presentation")
+PROVENANCE_ONLY_COLUMNS = frozenset({"source_type"})
 
 
 def sha256(path: Path) -> str:
@@ -38,7 +41,68 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def split_list(value: str | None) -> list[str] | None:
+def csv_semantic_fingerprint(
+    path: Path,
+    *,
+    role_columns: Optional[dict[str, str]] = None,
+    numeric_roles: Optional[list[str]] = None,
+) -> tuple[list[str], Optional[str]]:
+    """Hash role-bound CSV content independently of superficial formatting."""
+
+    with path.open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        fieldnames = reader.fieldnames or []
+        if len(fieldnames) != len(set(fieldnames)):
+            raise ValueError(
+                f"CB-DEMO-01 cannot fingerprint duplicate CSV columns: {path}"
+            )
+        bindings = (
+            {
+                field: field
+                for field in fieldnames
+                if field.strip().lower() not in PROVENANCE_ONLY_COLUMNS
+            }
+            if role_columns is None
+            else dict(role_columns)
+        )
+        roles = sorted(bindings)
+        actual_columns = list(bindings.values())
+        if (
+            not roles
+            or len(actual_columns) != len(set(actual_columns))
+            or not set(actual_columns).issubset(fieldnames)
+        ):
+            return roles, None
+        numeric = set(numeric_roles or [])
+        rows = []
+        for row in reader:
+            canonical_row = []
+            for role in roles:
+                value = (row.get(bindings[role]) or "").strip()
+                if role in numeric:
+                    try:
+                        decimal_value = Decimal(value)
+                    except InvalidOperation:
+                        pass
+                    else:
+                        if decimal_value.is_finite():
+                            value = (
+                                "0"
+                                if decimal_value == 0
+                                else format(decimal_value.normalize(), "f")
+                            )
+                canonical_row.append((role, value))
+            rows.append(canonical_row)
+    rows.sort()
+    canonical = json.dumps(
+        {"roles": roles, "rows": rows},
+        ensure_ascii=False,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return roles, hashlib.sha256(canonical).hexdigest()
+
+
+def split_list(value: Optional[str]) -> Optional[list[str]]:
     if value is None:
         return None
     items = [item.strip() for item in value.split(",")]
@@ -50,7 +114,7 @@ def split_list(value: str | None) -> list[str] | None:
 
 
 def validate_order(
-    name: str, declared: list[str] | None, observed: list[str]
+    name: str, declared: Optional[list[str]], observed: list[str]
 ) -> list[str]:
     if declared is None:
         return observed
@@ -74,8 +138,59 @@ def parse_formats(value: str) -> list[str]:
     return formats
 
 
+def enforce_final_contract(payload: dict[str, Any]) -> dict[str, Any]:
+    """Run the canonical SciPlot final gate before a production render."""
+
+    validator_path = (
+        Path(__file__).resolve().parents[3]
+        / "scripts"
+        / "validate_contract.py"
+    )
+    spec = importlib.util.spec_from_file_location(
+        "sciplot_validate_contract",
+        validator_path,
+    )
+    if spec is None or spec.loader is None:
+        raise ValueError(
+            "CB-CONTRACT-01 canonical Figure Contract validator is unavailable"
+        )
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    checker = getattr(module, "check_contract", None)
+    summarizer = getattr(module, "summarize", None)
+    if not callable(checker) or not callable(summarizer):
+        raise ValueError(
+            "CB-CONTRACT-01 canonical Figure Contract validator is invalid"
+        )
+    checks = checker(payload, stage="final")
+    report = summarizer(checks, "final")
+    non_pass = [
+        f"{item.get('id')}: {item.get('message')}"
+        for item in checks
+        if item.get("status") != "PASS"
+    ]
+    if report.get("status") != "PASS":
+        raise ValueError(
+            "CB-CONTRACT-01 SCIPLOT-CONTRACT-FINAL requires PASS: "
+            + "; ".join(non_pass)
+        )
+    return {
+        "schema": report["schema"],
+        "status": report["status"],
+        "stage": report["stage"],
+        "summary": report["summary"],
+        "check_ids": [item["id"] for item in checks],
+    }
+
+
 def load_data_manifest(
-    manifest_path: Path, input_path: Path, run_mode: str
+    manifest_path: Path,
+    input_path: Path,
+    run_mode: str,
+    *,
+    bundled_demo_path: Optional[Path] = None,
+    semantic_column_bindings: Optional[dict[str, str]] = None,
+    numeric_semantic_roles: Optional[list[str]] = None,
 ) -> dict[str, Any]:
     resolved = manifest_path.resolve()
     if not resolved.is_file():
@@ -106,6 +221,43 @@ def load_data_manifest(
                 "CB-DEMO-01 production mode requires non-synthetic data with "
                 "production_use_allowed=true"
             )
+        if bundled_demo_path is not None and bundled_demo_path.is_file():
+            demo_path = bundled_demo_path.resolve()
+            demo_bindings = (
+                {
+                    role: role
+                    for role in semantic_column_bindings
+                }
+                if semantic_column_bindings is not None
+                else None
+            )
+            demo_roles, demo_semantic_hash = csv_semantic_fingerprint(
+                demo_path,
+                role_columns=demo_bindings,
+                numeric_roles=numeric_semantic_roles,
+            )
+            _, input_semantic_hash = csv_semantic_fingerprint(
+                input_path,
+                role_columns=(
+                    semantic_column_bindings
+                    if semantic_column_bindings is not None
+                    else {role: role for role in demo_roles}
+                ),
+                numeric_roles=numeric_semantic_roles,
+            )
+            if (
+                input_path.resolve() == demo_path
+                or actual_hash == sha256(demo_path)
+                or (
+                    demo_semantic_hash is not None
+                    and input_semantic_hash == demo_semantic_hash
+                )
+            ):
+                raise ValueError(
+                    "CB-DEMO-01 bundled demo inputs, including byte-identical "
+                    "or provenance-only modified copies, cannot be used in "
+                    "production"
+                )
     elif not payload["synthetic"] or payload["production_use_allowed"]:
         raise ValueError(
             "CB-DEMO-01 smoke mode requires synthetic data with "
@@ -127,6 +279,7 @@ def load_figure_contract(
     dpi: int,
     rows: int,
     implementation_id: str,
+    implementation_version: str,
 ) -> dict[str, Any]:
     """Bind a production render to its scientific and delivery contract."""
 
@@ -145,6 +298,8 @@ def load_figure_contract(
         raise ValueError(
             "CB-CONTRACT-01 Figure Contract must be a version-1 object"
         )
+    if run_mode == "production":
+        payload["_contract_lint"] = enforce_final_contract(payload)
 
     task = payload.get("task")
     target = payload.get("target")
@@ -277,13 +432,24 @@ def load_figure_contract(
         if isinstance(implementation, dict)
         else None
     )
-    if isinstance(native, dict) and native.get("id") not in {
-        None,
-        implementation_id,
-    }:
+    if run_mode == "production" and not isinstance(native, dict):
         raise ValueError(
-            "CB-CONTRACT-01 native implementation id does not match renderer"
+            "CB-CONTRACT-01 production requires "
+            "implementation.native_implementation"
         )
+    if isinstance(native, dict):
+        if native.get("id") != implementation_id:
+            raise ValueError(
+                "CB-CONTRACT-01 native implementation id does not match renderer"
+            )
+        if native.get("version") != implementation_version:
+            raise ValueError(
+                "CB-CONTRACT-01 native implementation version does not match renderer"
+            )
+        if native.get("supported_task_phase") != phase:
+            raise ValueError(
+                "CB-CONTRACT-01 native supported_task_phase does not match task.phase"
+            )
 
     payload["_path"] = str(resolved)
     payload["_sha256"] = sha256(resolved)
@@ -339,9 +505,13 @@ def read_and_validate(
                     raise ValueError(
                         f"CB-DEMO-01 line {line_number} is not marked simulated"
                     )
-            elif row.get("source_type", "").strip().lower() == "simulated":
+            elif row.get("source_type", "").strip().lower() in {
+                "simulated",
+                "synthetic",
+                "demo",
+            }:
                 raise ValueError(
-                    "CB-DEMO-01 simulated rows require --run-mode smoke"
+                    "CB-DEMO-01 synthetic/demo rows require --run-mode smoke"
                 )
 
             raw_sample = row[args.sample_col]

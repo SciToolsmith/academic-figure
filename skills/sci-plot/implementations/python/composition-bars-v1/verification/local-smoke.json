@@ -3,17 +3,17 @@
   "implementation_id": "composition-bars-v1",
   "implementation_version": "1.0.0",
   "verified_on": "2026-08-05",
-  "source_sha256": "78976d31848d16cf9da8a1a82cd6abadf1f092e87cb29864a69a8b673ab7ad55",
+  "source_sha256": "de38b6e86d82b819e8aeb2137e65075c14ffc0cf592de3f8a07f6f885f9e1de9",
   "source_files_sha256": {
-    "render.py": "78976d31848d16cf9da8a1a82cd6abadf1f092e87cb29864a69a8b673ab7ad55",
-    "contract.py": "d1dfbf9f2f674cf14557e16769dcc1100562844d0a5e87977dce5e9856467fc4"
+    "render.py": "de38b6e86d82b819e8aeb2137e65075c14ffc0cf592de3f8a07f6f885f9e1de9",
+    "contract.py": "0b40436e8e02b6c2cf79ec0752eb6e63a52da6f28c9debcf923443ff91c1de2e"
   },
   "fixture_sha256": "735b3a814fcf665edde9b4f4290278cd3a36f34e382c9700766df787f1458bd3",
   "fixture_manifest_sha256": "2d5d28bc2701d1b4095cf182ca8261127574aedbcdcc031d6d6e091f12ed02a9",
   "figure_contract_sha256": "775906be4390783cbdca645f56d021d773c7bf2ec288c44ff66f4a58e2035378",
   "runtime": {
-    "python": "3.9.6",
-    "matplotlib": "3.9.4",
+    "python": "3.12.12",
+    "matplotlib": "3.10.9",
     "platform": "macOS"
   },
   "command_profile": {
@@ -31,23 +31,23 @@
   },
   "artifacts": {
     "composition.svg": {
-      "sha256": "1b81953b2c3603b180c2cc07f323a03b01d2dc9a75d20c08af940abb3772c915",
-      "bytes": 18269,
+      "sha256": "6b833faa7b757f66947a43eb80096c958711523b8284302ba873cb0677bb6405",
+      "bytes": 18743,
       "artifact_qa": "PASS"
     },
     "composition.pdf": {
-      "sha256": "1060f80e6e91b6a0965a0e6319e29c1349db2b100410fc9f11bc45463dde0c0f",
-      "bytes": 37417,
+      "sha256": "e003208199dfdacfd59d604bfe68a070f275970b98111f3af00dfb39dbafd1af",
+      "bytes": 37425,
       "artifact_qa": "PASS"
     },
     "composition.png": {
-      "sha256": "9bfe7c3ec8c23253518847892c8c7a6681d14704457ef138955c32c279d1bbcd",
-      "bytes": 86823,
-      "artifact_qa": "WARN"
+      "sha256": "5a91134732b9872195fd3889618550f7c8426dfc456fee3ef1326e3a3a3fcf22",
+      "bytes": 88961,
+      "artifact_qa": "PASS"
     },
     "analysis-table.csv": {
-      "sha256": "cd2fea74465f3e42e81a52ce0598e4b4c62c3b7eccfe67c6746f6f8a84d15bfe",
-      "bytes": 1378
+      "sha256": "a6383b2ed1bc1f8ba4fa590fe4c8e9e6366c6fc30d9cd62a76b25cefcbccb9de",
+      "bytes": 1234
     },
     "data-validation.json": {
       "sha256": "97fccbe2df642a5b2bd52707d87c64311ab0bac3d22c30830225bf5172152059",
@@ -81,13 +81,20 @@
       }
     },
     "png": {
-      "status": "WARN",
+      "status": "PASS",
       "checks": {
-        "pass": 4,
-        "warn": 1,
+        "pass": 5,
+        "warn": 0,
         "fail": 0
-      },
-      "resolved_by_visual_review": "The dependency-light uniform-color heuristic warned; original-resolution inspection confirmed nonblank colored bars, text, legend, axes, and watermark."
+      }
+    },
+    "unified_qa": {
+      "status": "PASS",
+      "checks": {
+        "pass": 44,
+        "warn": 0,
+        "fail": 0
+      }
     }
   },
   "final_size_visual_review": {

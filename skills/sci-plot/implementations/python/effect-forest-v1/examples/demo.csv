@@ -1,0 +1,7 @@
+source_type,label,group,estimate,lower,upper
+simulated,All participants,Overall,0.42,0.18,0.66
+simulated,Age 65 or younger,Age,0.50,0.17,0.83
+simulated,Older than 65,Age,0.34,-0.02,0.70
+simulated,Female,Sex,0.46,0.11,0.81
+simulated,Male,Sex,0.38,0.03,0.73
+simulated,High baseline score,Baseline score,0.55,0.16,0.94

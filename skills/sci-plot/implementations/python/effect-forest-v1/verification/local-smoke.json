@@ -1,0 +1,109 @@
+{
+  "schema_version": "sciplot.implementation-verification/v1",
+  "implementation_id": "effect-forest-v1",
+  "implementation_version": "1.0.0",
+  "verified_on": "2026-08-06",
+  "source_sha256": "b547f4e065b69582d595d0147e7146006363f03c6df8c59e19ceb413f763f87f",
+  "source_files_sha256": {
+    "render.py": "b547f4e065b69582d595d0147e7146006363f03c6df8c59e19ceb413f763f87f"
+  },
+  "shared_source_files_sha256": {
+    "implementations/python/_shared/runtime.py": "bc9ed53c6c64f3cfb87790c094a5d9db6f06cb2390bff0b168e320e11c647d70"
+  },
+  "fixture_sha256": "ca71d27945dbcdbc3248631240794a29a18ab508c7e573e0d0fc8117954c3b7a",
+  "fixture_manifest_sha256": "aad5674411e9aaf991dd6778271e283d87e64a5099b6b7f37e716d71af81ca18",
+  "figure_contract_sha256": "3500d62e1b0e3a1432809accd813e5c00d6ad084bed94e335ad5c603181a7241",
+  "runtime": {
+    "python": "3.12.12",
+    "matplotlib": "3.10.8",
+    "platform": "macOS"
+  },
+  "command_profile": {
+    "run_mode": "smoke",
+    "label_order": [
+      "All participants",
+      "Age 65 or younger",
+      "Older than 65",
+      "Female",
+      "Male",
+      "High baseline score"
+    ],
+    "group_order": [
+      "Overall",
+      "Age",
+      "Sex",
+      "Baseline score"
+    ],
+    "effect_scale": "adjusted mean difference",
+    "interval_label": "95% confidence interval",
+    "reference_value": 0,
+    "x_label": "Adjusted mean difference (declared units)",
+    "width_mm": 183,
+    "height_mm": 105,
+    "dpi": 300,
+    "figure_contract": "references/figure-contract.presentation-forest.example.json",
+    "formats": [
+      "svg",
+      "pdf",
+      "png"
+    ]
+  },
+  "artifacts": {
+    "effect-forest.svg": {
+      "sha256": "691256c90d64102928da4973527389a252e8ae175aeaa41a019b0f9152810ada",
+      "bytes": 19182,
+      "artifact_qa": "PASS"
+    },
+    "effect-forest.pdf": {
+      "sha256": "38288092c09aaca59037886c6956aaf08aa59b80e5c45635c33f356874c26b0e",
+      "bytes": 41574,
+      "artifact_qa": "PASS"
+    },
+    "effect-forest.png": {
+      "sha256": "886991d49b94af084f5479613c4144c08c438cf6c7d9af1fe928703907f80dd1",
+      "bytes": 125230,
+      "artifact_qa": "PASS"
+    },
+    "analysis-table.csv": {
+      "sha256": "554192259c2ecbd515d9bcf60653eceee9c3c8c7329b3146423c1266fa29746e",
+      "bytes": 801
+    },
+    "data-validation.json": {
+      "sha256": "f0729800e724cdeb3134f4fa967aa6ac5228284be7ed22f985b3ddb957b692aa",
+      "bytes": 1162,
+      "status": "PASS"
+    }
+  },
+  "artifact_evidence": {
+    "delivery": {
+      "status": "PASS"
+    },
+    "svg_pdf_png": {
+      "status": "PASS",
+      "checks": {
+        "pass": 15,
+        "warn": 0,
+        "fail": 0
+      }
+    },
+    "unified_qa": {
+      "status": "PASS",
+      "checks": {
+        "pass": 41,
+        "warn": 0,
+        "fail": 0
+      }
+    }
+  },
+  "final_size_visual_review": {
+    "completed": true,
+    "result": "PASS",
+    "checks": [
+      "all six estimate labels and intervals are legible",
+      "null reference line and effect scale are explicit",
+      "color-family legend does not overlap evidence",
+      "synthetic watermark prominent",
+      "no visible clipping or overlap"
+    ]
+  }
+}

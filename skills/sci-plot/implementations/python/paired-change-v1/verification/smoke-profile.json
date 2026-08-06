@@ -1,0 +1,28 @@
+{
+  "schema_version": "sciplot.smoke-profile/v1",
+  "argv": [
+    "render.py",
+    "--input",
+    "implementations/python/paired-change-v1/examples/demo.csv",
+    "--data-manifest",
+    "implementations/python/paired-change-v1/examples/demo-data.json",
+    "--figure-contract",
+    "references/figure-contract.descriptive-paired.example.json",
+    "--output-dir",
+    "{output_dir}",
+    "--run-mode",
+    "smoke",
+    "--group-order",
+    "Control,Treatment",
+    "--timepoint-order",
+    "Baseline,Week 8",
+    "--formats",
+    "svg,pdf,png",
+    "--width-mm",
+    "183",
+    "--height-mm",
+    "105",
+    "--dpi",
+    "300"
+  ]
+}

@@ -9,7 +9,7 @@ import json
 import math
 import sys
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Iterable, Optional
 
 
 SCHEMA = "sciplot.delivery-validation/v1"
@@ -57,7 +57,7 @@ def _check(
     checks.append(item)
 
 
-def _format_from_item(item: dict[str, Any], name: str) -> str | None:
+def _format_from_item(item: dict[str, Any], name: str) -> Optional[str]:
     declared = item.get("format")
     if isinstance(declared, str):
         value = declared.lower()

@@ -29,7 +29,7 @@
 > [!IMPORTANT]
 > **案例不是模板，也不是能力边界。** SciPlot 会先完成 Figure Contract 与证据架构，再把案例当作可选设计先验；没有语义匹配时，明确选择 `build-new`，继续原创设计。
 
-| **18** 个设计案例 | **36** 份参考源码 | **1** 个原生 renderer | **7** 张风险卡 | **5** 条任务路线 |
+| **18** 个设计案例 | **36** 份参考源码 | **4** 个原生 renderer | **7** 张风险卡 | **5** 条任务路线 |
 |:---:|:---:|:---:|:---:|:---:|
 | 科学表达决策 | Python + R 作者复现 | 独立契约与测试 | 常见失败模式 | Create · Adapt · Revise · Review · Export |
 
@@ -264,7 +264,16 @@ SciPlot 把“参考”和“可执行”拆成三层，避免把能画出来误
 |---|---|---|---|
 | **Semantic case** | 18 个案例卡与预览 | 学习一种科学表达决策，做语义检索 | 不代表代码或数据可直接复用 |
 | **Reference source pack** | 每例 Python + R，共 36 份作者复现源码 | 检查布局、实现和适配成本 | 不含论文原始数据，也不是生产模板 |
-| **Verified implementation** | `composition-bars-v1` | 在输入契约和守卫通过后生成 SVG/PDF/PNG 与审计文件 | 不会覆盖 Figure Contract 或替代科学判断 |
+| **Verified implementation** | 4 个 SciPlot-native renderer | 在输入契约和守卫通过后生成 SVG/PDF/PNG 与审计文件 | 不会覆盖 Figure Contract 或替代科学判断 |
+
+四个原生实现覆盖的是互补证据结构，不是限制智能体发挥的图表菜单：
+
+| 原生实现 | 适合表达 | 明确不替你做什么 |
+|---|---|---|
+| `raw-distribution-v1` | 原始观测、组内分布、median · IQR | 不计算组间检验、置信区间或因果效应 |
+| `paired-change-v1` | 同一对象两个时间点的完整配对变化 | 不把组内变化冒充组间效应 |
+| `effect-forest-v1` | 已完成分析的效应量与区间 | 不重跑模型、不生成 p 值或区间 |
+| `composition-bars-v1` | 明确共同分母下的样本级组成 | 不隐藏缺失类别、不静默归一化比例 |
 
 生产任务在通过语义门槛后，优先选择兼容的原生 verified implementation。
 只有没有原生实现、需要实现取证，或用户明确要求忠实复现时，才暂存参考源码包。
@@ -286,12 +295,15 @@ python skills/sci-plot/scripts/stage_case.py rf-0001 \
 python skills/sci-plot/scripts/validate_implementations.py --pretty
 ```
 
-第一版 `composition-bars-v1` 会拒绝重复键、缺失类别、NaN/Inf、负值、
-未闭合比例、模拟数据冒充生产输入和非空输出目录。它不静默归一化比例，
-只有显式 `counts` 模式才换算份额并逐样本记录分母；输出同时包含
-`analysis-table.csv`、`data-validation.json` 和 Render Manifest。
-生产运行必须传入 Figure Contract，并机械核对任务阶段、有效行数、正式
-格式集合、物理尺寸和 DPI；渲染后还会复核合同哈希、Manifest 与实际文件。
+四个实现都会拒绝模拟数据冒充生产输入、非空输出目录、非法字段和破坏
+各自科学结构的输入。组成图不会静默归一化比例；分布图保留每个观测；
+配对图要求完整且身份一致的两时点记录；森林图只呈现明确标注的预计算
+结果。每次运行都会同时生成 `analysis-table.csv`、
+`data-validation.json` 和 Render Manifest。
+生产运行必须传入 Figure Contract；任何输出目录创建前，完整 `final`
+合同门禁必须为 `PASS`，随后还会机械核对任务阶段、有效行数、正式格式
+集合、物理尺寸和 DPI。Render Manifest 会记录合同 lint 摘要，渲染后再
+复核合同哈希、Manifest 与实际文件。
 CLI 中的 183 × 105 mm 与 300 dpi 只是实现默认提案；生产值必须在看到真实
 facet、sample 和 category 数量后写入 Figure Contract，不能把默认值当期刊规范。
 
@@ -319,7 +331,7 @@ flowchart TD
     J -->|"否 / No"| K["QA Report<br/>PASS · WARN · unresolved"]
 ```
 
-Figure Contract 会在选版式前固定最容易被图形悄悄改变的内容：科学问题、分析单位、重复单位、样本量定义、单位、中心与不确定性、检验或模型、过滤与变换，以及最终尺寸和格式。任务同时标记为 `proceed`、`prototype-only` 或 `blocked`；存在影响科学真实性的阻塞项时，不进入生产渲染。
+Figure Contract 会在选版式前固定最容易被图形悄悄改变的内容：科学问题、分析单位、重复单位、样本量定义、单位、中心与不确定性、检验或模型、过滤与变换，以及最终尺寸和格式。面向发表的确认性定量主张还必须绑定结构化 estimand：目标总体或系统、分析单位、结局与时间点、对比、汇总量与效应尺度、调整/聚合和缺失数据策略。任务同时标记为 `proceed`、`prototype-only` 或 `blocked`；存在影响科学真实性的阻塞项时，不进入生产渲染。
 
 <a id="examples"></a>
 
@@ -376,7 +388,7 @@ skills/sci-plot/
 │   ├── cases/                 # 18 张预览
 │   └── case-packs/            # 18 × Python/R 参考源码
 ├── implementations/           # SciPlot 原生、独立验证的 renderer
-├── evals/evals.json
+├── evals/evals.json           # deterministic probes + behavioral protocol
 ├── references/
 ├── scripts/
 └── tests/
@@ -387,6 +399,9 @@ skills/sci-plot/
 - [`rank_cases.py`](skills/sci-plot/scripts/rank_cases.py)：按科学语义检索候选案例，允许无匹配结果。
 - [`stage_case.py`](skills/sci-plot/scripts/stage_case.py)：检查或暂存一个参考源码后端，不在 skill 内原地执行。
 - [`validate_implementations.py`](skills/sci-plot/scripts/validate_implementations.py)：校验原生 implementation 的清单、源码哈希、fixture 与验证证据。
+- [`run_implementation_smoke.py`](skills/sci-plot/scripts/run_implementation_smoke.py)：从机器索引动态运行全部 verified implementation，并逐一执行 Contract、delivery、artifact 与统一 QA。
+- [`sciplot_doctor.py`](skills/sci-plot/scripts/sciplot_doctor.py)：不渲染图件，快速检查 Python、依赖和 implementation/profile 路径安全。
+- [`run_evals.py`](skills/sci-plot/scripts/run_evals.py)：执行确定性探针，或严格校验由外部智能体产生并绑定 catalog 哈希的行为评测结果；runner 本身不会调用模型。
 - [`validate_contract.py`](skills/sci-plot/scripts/validate_contract.py)：执行 plan、pre-render、final 三阶段 Figure Contract 门槛。
 - [`validate_delivery.py`](skills/sci-plot/scripts/validate_delivery.py)：核对合同哈希、正式格式、尺寸、DPI、Manifest 文件路径与产物哈希。
 - [`semantic_diff.py`](skills/sci-plot/scripts/semantic_diff.py)：检测修改前后的未授权科学语义变化。
@@ -404,6 +419,8 @@ python3 skills/sci-plot/scripts/check_vocab_drift.py --pretty
 python3 skills/sci-plot/scripts/rank_cases.py --validate-only
 python3 skills/sci-plot/scripts/stage_case.py --validate-only
 python3 skills/sci-plot/scripts/validate_implementations.py --pretty
+python3 skills/sci-plot/scripts/sciplot_doctor.py --pretty
+python3 skills/sci-plot/scripts/run_evals.py deterministic --pretty
 python3 skills/sci-plot/scripts/validate_contract.py \
   skills/sci-plot/references/figure-contract.example.json \
   --stage plan \
@@ -412,12 +429,19 @@ python3 skills/sci-plot/scripts/validate_contract.py \
   skills/sci-plot/references/figure-contract.descriptive-composition.example.json \
   --stage final \
   --pretty
+
+smoke_root="$(mktemp -d)"
+python3 skills/sci-plot/scripts/run_implementation_smoke.py \
+  --output-root "$smoke_root/bundles" \
+  --output "$smoke_root/report.json" \
+  --pretty
 ```
 
-预期结果为全部回归测试通过、18 个案例源码包和原生 implementation
-清单有效，并且两个示例契约没有 `FAIL`；确认性示例中保留的开放风险会
-诚实显示为 `WARN`，描述性组成示例应为 `PASS`。仓库的 GitHub Actions
-会在每次 push 和 pull request 时执行同类检查。
+预期结果为全部回归测试通过、18 个案例源码包和 4 个原生
+implementation 清单有效，并且五个示例契约没有不符合其阶段预期的
+`FAIL`；确认性示例中保留的开放风险会诚实显示为 `WARN`，四个原生 smoke
+合同应为 `PASS`。仓库的 GitHub Actions 会在每次 push 和 pull request
+时执行同类检查。
 
 ## 语言与兼容性策略
 

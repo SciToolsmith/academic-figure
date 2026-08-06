@@ -12,6 +12,7 @@ Infer fields from supplied data, code, captions, and artifacts. Ask only blockin
 - [Contract schema](#contract-schema)
 - [Route-specific use](#route-specific-use)
 - [Claim–evidence rules](#claimevidence-rules)
+- [Estimand ledger](#estimand-ledger)
 - [Completion check](#completion-check)
 
 ## Minimum gate
@@ -21,12 +22,13 @@ Do not begin publication-oriented implementation until these items are known or 
 1. task route and research phase;
 2. scientific question or bounded claim;
 3. analysis unit and replicate unit;
-4. primary evidence and intended panel roles;
-5. quantity, units, denominator, center, and uncertainty semantics;
-6. exclusions, missingness, transformations, aggregation, and sampling rules;
-7. statistical annotations and multiplicity treatment;
-8. target size, output formats, and editing requirements;
-9. main integrity or reviewer risks.
+4. the estimand for each publication-confirmatory quantitative claim;
+5. primary evidence and intended panel roles;
+6. quantity, units, denominator, center, and uncertainty semantics;
+7. exclusions, missingness, transformations, aggregation, and sampling rules;
+8. statistical annotations and multiplicity treatment;
+9. target size, output formats, and editing requirements;
+10. main integrity or reviewer risks.
 
 For exploratory work, replace the claim with a question and keep interpretations provisional. For a quick cosmetic revision, fill only fields needed to prove that scientific meaning remains unchanged.
 
@@ -83,7 +85,8 @@ python scripts/validate_contract.py figure-contract.json --stage final --pretty
   predictive/causal support records are warnings at this stage;
 - `pre-render` blocks unresolved scientific inputs and missing acceptance
   criteria before production rendering, including placeholders in scientific
-  or artifact-critical fields and unauditable predictive/causal claims.
+  or artifact-critical fields, incomplete estimands for publication-
+  confirmatory quantitative claims, and unauditable predictive/causal claims.
   Read-only Review and file-level Export may retain an unaudited strong claim
   as `WARN` only when its status is `unknown` or `not-supported`; their output
   must explicitly avoid claiming scientific validation;
@@ -105,6 +108,11 @@ checked with `scripts/validate_contract.py`.
 The separate
 [descriptive composition example](figure-contract.descriptive-composition.example.json)
 shows a guarded raw-count-to-share workflow without inferential claims.
+The
+[distribution](figure-contract.descriptive-distribution.example.json),
+[paired-change](figure-contract.descriptive-paired.example.json), and
+[effect-forest](figure-contract.presentation-forest.example.json) examples
+show final-gate contracts for their corresponding native implementations.
 Stable machine values used below are defined once in
 [schema-vocabularies.json](schema-vocabularies.json); localized retrieval and
 transformation terms live separately in
@@ -134,8 +142,21 @@ question:
   comparison_or_exposure: ""
   outcome: ""
 
+estimands:                     # optional except at the production gate below
+  - id: E1
+    population_or_system: ""
+    analysis_unit: ""
+    outcome: ""
+    timepoint_or_horizon: ""
+    contrast_or_exposure: ""
+    summary_measure: ""
+    effect_scale: ""
+    adjustment_or_aggregation: ""
+    missing_data_policy: ""
+
 claims:
   - id: C1
+    estimand_id: E1           # publication-confirmatory quantitative target
     statement: ""
     level: descriptive | associational | predictive | causal
     status: proposed | supported | qualified | not-supported | unknown
@@ -157,6 +178,7 @@ evidence:
 
 panels:
   - id: a
+    estimand_id: E1           # required on confirmatory primary/supporting panels
     question: ""
     evidence_role: primary | supporting | control | diagnostic | context
     supports_claims: [C1]
@@ -224,6 +246,11 @@ target:
   resolution_dpi: 300           # positive if any item in formats is PNG/TIFF
 
 implementation:
+  native_implementation:      # omit when no verified native renderer is selected
+    id: ""
+    version: ""
+    supported_task_phase: exploratory | descriptive | confirmatory | presentation
+    semantic_bindings: {}     # renderer-specific scientific CLI/field bindings
   backend_by_panel: {}
   final_assembly_owner: ""
   case_influence:
@@ -301,6 +328,45 @@ requirement, color mode, and acceptance criteria. Report file-level validation
 separately from any scientific checks that could not be performed.
 
 ## Claim–evidence rules
+
+### Estimand ledger
+
+Use one `estimands[]` entry for each distinct quantitative target. Treat its
+`id` as the semantic join key between the scientific claim, analysis, panel,
+caption, and renderer—not as a prose restatement of the question.
+
+Each entry must resolve:
+
+- `population_or_system` — the population or system to which the quantity
+  refers;
+- `analysis_unit` — the independent unit represented by the estimate;
+- `outcome` — the measured or modeled endpoint, including units where known;
+- `timepoint_or_horizon` — the observation time, window, or prediction
+  horizon;
+- `contrast_or_exposure` — comparison, reference, exposure, or explicit
+  no-contrast target;
+- `summary_measure` — the statistic or contrast being estimated;
+- `effect_scale` — original units, difference, ratio, log ratio, odds ratio,
+  hazard ratio, probability, or another declared scale and direction;
+- `adjustment_or_aggregation` — covariate adjustment, weights, pooling,
+  stratification, or an explicit non-applicability statement;
+- `missing_data_policy` — complete-case, imputation, censoring, or another
+  auditable policy.
+
+For Create, Adapt, and Revise with `profile=publication` and
+`phase=confirmatory`, every `associational`, `predictive`, or `causal` claim
+must set `estimand_id` to a complete entry before `pre-render` and `final`.
+Descriptive, exploratory, presentation-only, minimal, Review, and Export
+contracts do not need an estimand solely to pass validation. They may still
+record one when it improves semantic traceability.
+
+A `primary` or `supporting` panel that bears on a
+publication-confirmatory estimand-bearing claim must set `estimand_id` to the
+same target before `pre-render` and `final`. If one such panel appears to bear
+on claims with different estimands, split the panel or correct the claim
+links; prose cannot substitute for the machine join key. Control, diagnostic,
+and context panels may omit `estimand_id`, but whenever the field is present it
+must agree with every linked estimand-bearing claim.
 
 ### Use a bounded claim
 
@@ -388,6 +454,10 @@ Before implementation, confirm:
 
 - each panel has one explicit question and unique contribution;
 - claim level matches study design;
+- every publication-confirmatory quantitative claim references one complete
+  estimand;
+- every primary or supporting panel for such a claim carries the same explicit
+  `estimand_id`;
 - analysis and replicate units are not conflated;
 - all values and marks are traceable to a source field or computed result;
 - transformations, exclusions, aggregation, and sampling are disclosed;

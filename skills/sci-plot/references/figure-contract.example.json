@@ -14,9 +14,24 @@
     "comparison_or_exposure": "baseline versus week 8",
     "outcome": "response in declared units"
   },
+  "estimands": [
+    {
+      "id": "E1",
+      "population_or_system": "study participants with both baseline and week 8 measurements",
+      "analysis_unit": "participant",
+      "outcome": "response in declared units",
+      "timepoint_or_horizon": "change from baseline to week 8",
+      "contrast_or_exposure": "week 8 minus baseline within participant",
+      "summary_measure": "median paired difference",
+      "effect_scale": "difference in the original response units; positive means higher at week 8",
+      "adjustment_or_aggregation": "one within-participant difference per complete pair; no covariate adjustment",
+      "missing_data_policy": "complete-pair analysis; participants missing either visit are excluded from this estimand"
+    }
+  ],
   "claims": [
     {
       "id": "C1",
+      "estimand_id": "E1",
       "statement": "Within complete pairs, the response differs between baseline and week 8.",
       "level": "associational",
       "status": "proposed",
@@ -34,6 +49,7 @@
   "panels": [
     {
       "id": "a",
+      "estimand_id": "E1",
       "question": "What changed within each complete pair?",
       "evidence_role": "primary",
       "supports_claims": ["C1"],
