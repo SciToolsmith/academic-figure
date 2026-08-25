@@ -1,8 +1,9 @@
 name: academic-figure
 version: 0.1.0
 description: >-
-  Lightweight router for scientific-figure review, selection, reproducible
-  rebuilding, and case-guided design. Large case assets load only after search.
+  Lightweight router for improving the scientific expression, visual quality,
+  and reproducibility of research figures through review, selection, and
+  rebuilding. Large case assets load only after search.
 
 always_load:
   - static/core/contract.md

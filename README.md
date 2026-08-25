@@ -1,10 +1,10 @@
 <div align="center">
 
-# academic-figure｜学术图形顾问
+# academic-figure｜科研图形优化
 
-**先确认科学含义，再选择图形；先建立数据契约，再编写代码。**
+**提升科研图形的科学表达、视觉质量与可复现性。**
 
-面向 Codex 的科研图形 Skill：在不改变科学含义和证据边界的前提下，审校、选型、重构并可复现地交付数据驱动的论文图形。
+面向 Codex 的科研绘图 Skill：从研究问题、数据结构与统计口径出发，审校现有图形、推荐更合适的表达方案，并生成适合论文呈现、可复现、可审查的 Python / R 实现。所有优化均以保持科学含义、不越过证据边界为前提。
 
 <p>
   <a href="https://github.com/SciToolsmith/academic-figure/actions/workflows/validate.yml"><img alt="validation" src="https://img.shields.io/github/actions/workflow/status/SciToolsmith/academic-figure/validate.yml?branch=main&style=flat-square&label=validation"></a>
@@ -54,7 +54,7 @@
 
 `academic-figure` 不是固定风格套件，也不会根据参考图机械复刻版式。它根据研究问题、数据结构和统计口径完成四类工作：
 
-- **审校**：检查现有图形或代码的科学表达、数据完整性、视觉层级和交付质量。
+- **审校**：检查现有图形或代码的科学表达、信息完整性、视觉层级和交付质量。
 - **选型**：从 180 个案例的信息结构中检索候选，并判断应精确复用、结构借鉴、仅参考风格还是重新设计。
 - **重构**：沿用用户的 Python 或 R 环境，生成完整、可运行、可适配的绘图脚本。
 - **交付**：记录字段映射、统计口径和数据排除情况，并核对最终尺寸、矢量输出与高分辨率位图。
@@ -148,7 +148,7 @@ python skills/academic-figure/scripts/search_cases.py \
 
 ## English
 
-`academic-figure` is a Codex Skill for reviewing, selecting, redesigning, and reproducibly rebuilding data-driven scientific figures without changing their scientific meaning. It includes a searchable 180-case atlas and 23 case-neutral open templates independently implemented and rendered in Python and R.
+`academic-figure` is a Codex Skill for improving the scientific expression, visual quality, and reproducibility of data-driven research figures. It reviews existing figures, recommends better-matched visual structures, and produces auditable Python/R implementations without changing scientific meaning. It includes a searchable 180-case atlas and 23 case-neutral open templates independently implemented and rendered in Python and R.
 
 ## Independence and license
 

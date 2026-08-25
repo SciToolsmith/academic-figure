@@ -49,7 +49,7 @@ jobs:
           agent = yaml.safe_load(
               (root / "agents/openai.yaml").read_text(encoding="utf-8")
           )
-          assert agent["interface"]["display_name"] == "学术图形顾问"
+          assert agent["interface"]["display_name"] == "科研图形优化"
           assert "$academic-figure" in agent["interface"]["default_prompt"]
 
           roadmap = json.loads(
