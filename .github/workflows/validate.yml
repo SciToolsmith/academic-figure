@@ -142,6 +142,42 @@ jobs:
           )
           PY
 
+      - name: Validate README and generated gallery
+        run: |
+          python .github/scripts/build_gallery.py --check
+          python - <<'PY'
+          import re
+          from pathlib import Path
+
+          docs = [Path("README.md"), Path("GALLERY.md"), Path("CASE_ASSETS.md")]
+          markdown_links = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
+          html_links = re.compile(r'(?:href|src)="([^"]+)"')
+
+          for doc in docs:
+              text = doc.read_text(encoding="utf-8")
+              targets = markdown_links.findall(text) + html_links.findall(text)
+              for target in targets:
+                  target = target.strip().split("#", 1)[0]
+                  if not target or "://" in target:
+                      continue
+                  assert (doc.parent / target).resolve().exists(), (doc, target)
+
+          gallery = Path("GALLERY.md").read_text(encoding="utf-8")
+          case_ids = {
+              line.split('"id": "', 1)[1].split('"', 1)[0]
+              for line in Path(
+                  "skills/academic-figure/references/cases/case-index.jsonl"
+              ).read_text(encoding="utf-8").splitlines()
+              if '"id": "' in line
+          }
+          assert len(case_ids) == 180
+          assert all(case_id in gallery for case_id in case_ids)
+
+          readme = Path("README.md").read_text(encoding="utf-8")
+          assert readme.count('src="skills/academic-figure/assets/open-templates/') == 6
+          print("root documentation: valid")
+          PY
+
       - name: Parse all R template sources
         run: |
           find skills/academic-figure/templates -type f -name '*.R' \
