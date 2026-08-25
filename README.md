@@ -13,7 +13,7 @@
 </p>
 
 <p>
-  <a href="GALLERY.md"><strong>浏览 180 个图鉴案例</strong></a>
+  <a href="https://scifigures.hihu.me/"><strong>在线检索 180 个科研图形 ↗</strong></a>
   ·
   <a href="GALLERY.md#open-templates">查看 23 个开放模板</a>
   ·
@@ -106,6 +106,8 @@ $academic-figure 用 Python 重构这张图，输出完整脚本、SVG 和 300 D
 | 已验证开放模板 | 23 | Python/R 双实现、演示数据、README 和双版本预览 |
 | 仅图鉴案例 | 157 | 不包含对应案例的完整源码 |
 | 开放语言实现 | 46 | 23 Python + 23 R |
+
+在线网站负责交互检索、高清预览与案例详情；本仓库负责 Skill、可版本化的案例索引和 23 个开放模板。
 
 开放状态以 `releaseTier`、`openImplementation` 和 `templatePath` 为准。23 个模板的准确名单见 [开放模板注册表](skills/academic-figure/references/cases/open-template-roadmap.json)。
 
