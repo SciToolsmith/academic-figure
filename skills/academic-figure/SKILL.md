@@ -1,12 +1,12 @@
 ---
 name: academic-figure
 description: >-
-  Review, select, redesign, and reproducibly rebuild data-driven scientific figures for manuscripts in Python or R without changing their scientific meaning. Use when a user asks to improve a paper figure, choose a more suitable visualization from a research question or dataset, match a reference figure to a better chart structure, write publication-oriented plotting code, or audit figure clarity, uncertainty, layout, color, typography, and export quality. Also use for 科研绘图、论文配图、学术图形、图形审校、可视化重构、图形推荐、Python/R 绘图代码 and publication-ready figure workflows. Do not use for statistics-only analysis, interactive dashboards, decorative infographics, or mechanism diagrams whose primary content is illustration rather than data.
+  Improve the scientific expression, visual quality, and reproducibility of data-driven research figures in Python or R without changing their scientific meaning. Use when a user asks to improve a paper figure, choose a more suitable visualization from a research question or dataset, match a reference figure to a better chart structure, write publication-oriented plotting code, or audit figure clarity, uncertainty, layout, color, typography, and export quality. Also use for 科研绘图、论文配图、学术图形、科研图形优化、图形审校、可视化重构、图形推荐、Python/R 绘图代码 and publication-ready figure workflows. Do not use for statistics-only analysis, interactive dashboards, decorative infographics, or mechanism diagrams whose primary content is illustration rather than data.
 ---
 
-# 学术图形顾问
+# 科研图形优化
 
-目标：在不改变科学含义与证据边界的前提下，帮助用户得到适合论文沟通、可复现、可审查的科研图形；必要时，推荐比原图更适合数据与研究问题的表达方式。
+目标：在保持科学含义、不越过证据边界的前提下，提升科研图形的科学表达、视觉质量与可复现性；必要时，推荐与数据和研究问题更匹配的表达方式。
 
 本 Skill 是路由器，不是长提示词。每次调用先读 [manifest.yaml](manifest.yaml)，再读其 `always_load` 中的核心文件。只按任务需要加载深层参考，不要一次性读取全部案例和提示词。
 

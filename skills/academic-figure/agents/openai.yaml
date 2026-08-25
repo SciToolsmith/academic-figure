@@ -1,6 +1,6 @@
 interface:
-  display_name: "学术图形顾问"
-  short_description: "审校科研图形、匹配高质量案例，并生成可复现的论文级重构方案"
-  default_prompt: "使用 $academic-figure 审校这张科研图，并在不改变科学含义的前提下提出可复现的改进方案。"
+  display_name: "科研图形优化"
+  short_description: "提升科研图形的科学表达与视觉质量，支持可复现的 Python/R 实现"
+  default_prompt: "使用 $academic-figure 审校并优化这张科研图，在保持科学含义、不越过证据边界的前提下提出改进方案，并在资料充分时给出可复现的 Python/R 实现。"
 policy:
   allow_implicit_invocation: true
