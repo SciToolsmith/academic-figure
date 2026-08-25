@@ -148,6 +148,24 @@ python skills/academic-figure/scripts/search_cases.py \
 
 </details>
 
+## 联系与反馈
+
+如果你在科研图形复现、论文实验复现或 `academic-figure` 使用过程中需要交流，可以通过小红书联系：
+
+- 小红书昵称：胡同学
+- 小红书号：
+
+```text
+5015520728
+```
+
+<details>
+<summary>查看小红书名片与二维码</summary>
+
+[![胡同学的小红书名片](assets/contact/xiaohongshu-card.jpg)](assets/contact/xiaohongshu-card.jpg)
+
+</details>
+
 ## English
 
 `academic-figure` is a Codex Skill for improving the scientific expression, visual quality, and reproducibility of data-driven research figures. It reviews existing figures, recommends better-matched visual structures, and produces auditable Python/R implementations without changing scientific meaning. It includes a searchable 180-case atlas and 23 case-neutral open templates independently implemented and rendered in Python and R.
