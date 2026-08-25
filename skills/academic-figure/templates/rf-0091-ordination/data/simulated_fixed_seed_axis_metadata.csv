@@ -1,0 +1,3 @@
+axis_key,axis_label,explained_variance,data_status,simulation_seed
+axis1,Ordination axis 1,0.42,SIMULATED,91
+axis2,Ordination axis 2,0.27,SIMULATED,91

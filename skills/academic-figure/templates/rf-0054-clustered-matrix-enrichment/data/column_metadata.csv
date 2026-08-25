@@ -1,0 +1,11 @@
+column_id,column_label,column_order,source_type,source_seed
+column_01,Column 01,1,simulated,54
+column_02,Column 02,2,simulated,54
+column_03,Column 03,3,simulated,54
+column_04,Column 04,4,simulated,54
+column_05,Column 05,5,simulated,54
+column_06,Column 06,6,simulated,54
+column_07,Column 07,7,simulated,54
+column_08,Column 08,8,simulated,54
+column_09,Column 09,9,simulated,54
+column_10,Column 10,10,simulated,54

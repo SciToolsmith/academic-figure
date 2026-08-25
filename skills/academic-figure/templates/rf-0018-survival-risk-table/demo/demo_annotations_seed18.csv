@@ -1,0 +1,4 @@
+time,curve_id,label,data_status,simulation_seed
+4.5,Curve A,Supplied note 1,SIMULATED,18
+6,Curve B,Supplied note 2,SIMULATED,18
+8,Curve C,Supplied note 3,SIMULATED,18

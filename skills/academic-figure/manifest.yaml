@@ -1,0 +1,55 @@
+name: academic-figure
+version: 0.1.0
+description: >-
+  Lightweight router for scientific-figure review, selection, reproducible
+  rebuilding, and case-guided design. Large case assets load only after search.
+
+always_load:
+  - static/core/contract.md
+  - static/core/stance.md
+
+routes:
+  review:
+    detect: Existing figure or plotting code needs scientific and visual review.
+    reference: references/figure-review.md
+  selection:
+    detect: Research question, data, or reference image needs a suitable chart structure.
+    reference: references/figure-selection.md
+  rebuild:
+    detect: Generate, revise, or adapt Python/R code and rendered figures.
+    reference: references/asset-adaptation.md
+  delivery:
+    detect: Any generated or revised figure is ready to export or hand off.
+    reference: references/delivery-qa.md
+
+axes:
+  backend:
+    detect: >-
+      Follow an explicit language or the language of existing user code. Review
+      and chart selection do not require a backend. If code is requested and no
+      language is implied, ask only when Python and R are both reasonable.
+    values:
+      python: static/fragments/backend/python.md
+      r: static/fragments/backend/r.md
+    multi: false
+
+case_library:
+  index: references/cases/case-index.jsonl
+  prompts: references/cases/case-prompts.json
+  search: scripts/search_cases.py
+  policy: >-
+    Search metadata first, inspect only the top one to three previews, and load
+    only the selected case prompt. An atlas entry is not an open implementation.
+
+references:
+  on_demand:
+    - condition: Review an existing rendered figure or plotting source.
+      path: references/figure-review.md
+    - condition: Choose a figure family from a question, dataset, or reference image.
+      path: references/figure-selection.md
+    - condition: Reuse a case, user script, reference image, or open template.
+      path: references/asset-adaptation.md
+    - condition: Render, export, verify, or deliver a generated or revised figure.
+      path: references/delivery-qa.md
+    - condition: Understand the local atlas fields, release tiers, or asset layout.
+      path: references/cases/README.md

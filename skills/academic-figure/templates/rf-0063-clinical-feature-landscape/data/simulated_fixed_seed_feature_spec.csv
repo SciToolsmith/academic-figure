@@ -1,0 +1,7 @@
+feature_id,feature_label,feature_type,display_order,display_min,display_max,levels,colors,missing_label,missing_color,data_status,simulation_seed
+measure_alpha,Measure alpha,continuous,1,0,100,,#F7FBFF|#08306B,Missing,#BDBDBD,SIMULATED,63
+measure_beta,Measure beta,continuous,2,0,50,,#FFF5EB|#7F2704,Missing,#BDBDBD,SIMULATED,63
+category_primary,Primary class,categorical,3,,,Class A|Class B|Class C,#4E79A7|#F28E2B|#59A14F,Missing,#BDBDBD,SIMULATED,63
+category_secondary,Secondary tier,categorical,4,,,Tier 1|Tier 2|Tier 3|Tier 4,#76B7B2|#E15759|#EDC948|#B07AA1,Missing,#BDBDBD,SIMULATED,63
+flag_alpha,Flag alpha,binary,5,,,No|Yes,#E5E7EB|#2A9D8F,Missing,#BDBDBD,SIMULATED,63
+flag_beta,Flag beta,binary,6,,,Absent|Present,#F3F4F6|#D55E00,Missing,#BDBDBD,SIMULATED,63

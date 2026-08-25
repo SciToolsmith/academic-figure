@@ -1,0 +1,7 @@
+module,annotation,annotation_value,annotation_order,source_type,source_seed
+module_1,Upstream label 1,metric=1.37,1,simulated,54
+module_1,Upstream label 2,adjusted=0.05,2,simulated,54
+module_2,Upstream label 3,metric=1.59,1,simulated,54
+module_2,Upstream label 4,adjusted=0.06,2,simulated,54
+module_3,Upstream label 5,metric=1.81,1,simulated,54
+module_3,Upstream label 6,adjusted=0.07,2,simulated,54

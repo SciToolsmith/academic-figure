@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "status": "initial-release-validated",
+  "releaseTarget": "23 validated cases with per-language releases",
+  "note": "All entries in this release registry have case-neutral open implementations. releaseTier and openImplementation remain authoritative in the generated public index.",
+  "candidates": [
+    {"id": "rf-0104", "wave": "A", "role": "distribution with raw observations", "implementations": {"python": true, "r": true}, "templatePath": "templates/rf-0104-raincloud", "validatedOn": "2026-08-24"},
+    {"id": "rf-0172", "wave": "A", "role": "effect estimates and confidence intervals", "implementations": {"python": true, "r": true}, "templatePath": "templates/rf-0172-forest", "validatedOn": "2026-08-24"},
+    {"id": "rf-0173", "wave": "A", "role": "paired observations and within-unit change", "implementations": {"python": true, "r": true}, "templatePath": "templates/rf-0173-paired-change", "validatedOn": "2026-08-24"},
+    {"id": "rf-0164", "wave": "A", "role": "ordered response curves", "implementations": {"python": true, "r": true}, "templatePath": "templates/rf-0164-ordered-response", "validatedOn": "2026-08-24"},
+    {"id": "rf-0026", "wave": "A", "role": "subject timelines and events", "implementations": {"python": true, "r": true}, "templatePath": "templates/rf-0026-subject-timeline", "validatedOn": "2026-08-24"},
+    {"id": "rf-0027", "wave": "A", "role": "typed cohort baseline table without inference", "implementations": {"python": true, "r": true}, "templatePath": "templates/rf-0027-baseline-table", "validatedOn": "2026-08-24"},
+    {"id": "rf-0109", "wave": "A", "role": "benchmark ranking table heatmap", "implementations": {"python": true, "r": true}, "templatePath": "templates/rf-0109-benchmark-heatmap", "validatedOn": "2026-08-24"},
+    {"id": "rf-0049", "wave": "A", "role": "descriptive multivariable relationship matrix", "implementations": {"python": true, "r": true}, "templatePath": "templates/rf-0049-relationship-matrix", "validatedOn": "2026-08-24"},
+    {"id": "rf-0091", "wave": "A", "role": "supplied ordination coordinates and annotations", "implementations": {"python": true, "r": true}, "templatePath": "templates/rf-0091-ordination", "validatedOn": "2026-08-24"},
+    {"id": "rf-0001", "wave": "A", "role": "faceted composition bars", "implementations": {"python": true, "r": true}, "templatePath": "templates/rf-0001-faceted-composition", "validatedOn": "2026-08-24"},
+    {"id": "rf-0157", "wave": "A", "role": "exact set intersections with UpSet", "implementations": {"python": true, "r": true}, "templatePath": "templates/rf-0157-upset", "validatedOn": "2026-08-24"},
+    {"id": "rf-0118", "wave": "A", "role": "multistage weighted flows", "implementations": {"python": true, "r": true}, "templatePath": "templates/rf-0118-sankey", "validatedOn": "2026-08-24"},
+
+    {"id": "rf-0018", "wave": "B", "role": "supplied survival steps and number-at-risk table", "implementations": {"python": true, "r": true}, "templatePath": "templates/rf-0018-survival-risk-table", "validatedOn": "2026-08-24"},
+    {"id": "rf-0107", "wave": "B", "role": "supplied feature statistics and precomputed enrichment", "implementations": {"python": true, "r": true}, "templatePath": "templates/rf-0107-feature-enrichment", "validatedOn": "2026-08-24"},
+    {"id": "rf-0063", "wave": "B", "role": "mixed clinical feature landscape", "implementations": {"python": true, "r": true}, "templatePath": "templates/rf-0063-clinical-feature-landscape", "validatedOn": "2026-08-24"},
+    {"id": "rf-0100", "wave": "B", "role": "supplied regression fits and residual diagnostics", "implementations": {"python": true, "r": true}, "templatePath": "templates/rf-0100-regression-diagnostics", "validatedOn": "2026-08-24"},
+    {"id": "rf-0041", "wave": "B", "role": "supplied embedding and sample composition", "implementations": {"python": true, "r": true}, "templatePath": "templates/rf-0041-embedding-composition", "validatedOn": "2026-08-24"},
+    {"id": "rf-0162", "wave": "B", "role": "three-part compositional data", "implementations": {"python": true, "r": true}, "templatePath": "templates/rf-0162-ternary-composition", "validatedOn": "2026-08-24"},
+    {"id": "rf-0044", "wave": "B", "role": "supplied clustered node-edge network", "implementations": {"python": true, "r": true}, "templatePath": "templates/rf-0044-clustered-network", "validatedOn": "2026-08-24"},
+    {"id": "rf-0066", "wave": "B", "role": "validated multi-level hierarchy as sunburst", "implementations": {"python": true, "r": true}, "templatePath": "templates/rf-0066-hierarchy-sunburst", "validatedOn": "2026-08-24"},
+
+    {"id": "rf-0133", "wave": "C", "role": "supplied nonlinear time-to-event effect curves", "implementations": {"python": true, "r": true}, "templatePath": "templates/rf-0133-nonlinear-survival-effects", "validatedOn": "2026-08-24"},
+    {"id": "rf-0054", "wave": "C", "role": "supplied sorted matrix and module annotations", "implementations": {"python": true, "r": true}, "templatePath": "templates/rf-0054-clustered-matrix-enrichment", "validatedOn": "2026-08-24"},
+    {"id": "rf-0122", "wave": "C", "role": "supplied projected boundaries and compositional symbols", "implementations": {"python": true, "r": true}, "templatePath": "templates/rf-0122-spatial-composition-map", "validatedOn": "2026-08-24"}
+  ]
+}

@@ -3,3 +3,9 @@
 __pycache__/
 *.py[cod]
 .venv/
+.env
+.Rhistory
+.RData
+.Rproj.user/
+output/
+outputs/
