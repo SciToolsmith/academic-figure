@@ -1,4 +1,4 @@
-name: Validate SciPlot
+name: Validate academic-figure
 
 on:
   push:
@@ -17,149 +17,137 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install validation dependencies
-        run: python -m pip install --disable-pip-version-check pyyaml matplotlib
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: "release"
 
-      - name: Validate skill metadata
+      - name: Install metadata dependency
+        run: python -m pip install --disable-pip-version-check pyyaml
+
+      - name: Validate package, index, links, and source syntax
         run: |
           python - <<'PY'
+          from __future__ import annotations
+
+          import ast
+          import json
+          import re
           from pathlib import Path
+
           import yaml
 
-          skill_file = Path("skills/sci-plot/SKILL.md")
-          text = skill_file.read_text(encoding="utf-8")
-          parts = text.split("---", 2)
+          root = Path("skills/academic-figure")
+          assert root.is_dir()
+
+          skill_text = (root / "SKILL.md").read_text(encoding="utf-8")
+          parts = skill_text.split("---", 2)
           assert len(parts) == 3 and not parts[0].strip(), "Missing YAML frontmatter"
           metadata = yaml.safe_load(parts[1])
-          assert metadata["name"] == "sci-plot"
+          assert metadata["name"] == "academic-figure"
           assert isinstance(metadata.get("description"), str) and metadata["description"].strip()
 
           agent = yaml.safe_load(
-              Path("skills/sci-plot/agents/openai.yaml").read_text(encoding="utf-8")
-          )["interface"]
-          assert agent["display_name"] == "SciPlot｜科研绘图"
-          assert 25 <= len(agent["short_description"]) <= 64
-          assert "$sci-plot" in agent["default_prompt"]
-          print("skill metadata: valid")
-          PY
+              (root / "agents/openai.yaml").read_text(encoding="utf-8")
+          )
+          assert agent["interface"]["display_name"] == "学术图形顾问"
+          assert "$academic-figure" in agent["interface"]["default_prompt"]
 
-      - name: Reject platform junk
-        run: |
-          test -z "$(find skills/sci-plot -name .DS_Store -print)"
+          roadmap = json.loads(
+              (root / "references/cases/open-template-roadmap.json").read_text(
+                  encoding="utf-8"
+              )
+          )
+          assert roadmap["status"] == "initial-release-validated"
+          assert len(roadmap["candidates"]) == 23
 
-      - name: Compile Python helpers
-        run: |
-          python -m compileall -q skills/sci-plot/scripts
-          python -m compileall -q skills/sci-plot/assets/case-packs
-          python -m compileall -q skills/sci-plot/implementations
-
-      - name: Run regression tests
-        run: python -m unittest discover -s skills/sci-plot/tests -v
-
-      - name: Check vocabulary drift
-        run: python skills/sci-plot/scripts/check_vocab_drift.py --pretty
-
-      - name: Validate case index and assets
-        run: |
-          python skills/sci-plot/scripts/rank_cases.py --validate-only
-          python skills/sci-plot/scripts/stage_case.py --validate-only
-
-      - name: Validate native implementations
-        run: python skills/sci-plot/scripts/validate_implementations.py --pretty
-
-      - name: Validate example Figure Contract gates
-        run: |
-          python skills/sci-plot/scripts/validate_contract.py \
-            skills/sci-plot/references/figure-contract.example.json \
-            --stage plan \
-            --pretty
-          python skills/sci-plot/scripts/validate_contract.py \
-            skills/sci-plot/references/figure-contract.example.json \
-            --stage pre-render \
-            --pretty
-          python skills/sci-plot/scripts/validate_contract.py \
-            skills/sci-plot/references/figure-contract.descriptive-composition.example.json \
-            --stage final \
-            --pretty
-
-      - name: Render and inspect a live native smoke bundle
-        env:
-          MPLBACKEND: Agg
-          MPLCONFIGDIR: ${{ runner.temp }}/matplotlib
-          SCIPLOT_CI_ROOT: ${{ runner.temp }}/sciplot-live-smoke
-        run: |
-          set -euo pipefail
-
-          output_dir="$SCIPLOT_CI_ROOT/render"
-          report_dir="$SCIPLOT_CI_ROOT/reports"
-          implementation="skills/sci-plot/implementations/python/composition-bars-v1"
-          contract="skills/sci-plot/references/figure-contract.descriptive-composition.example.json"
-
-          mkdir -p "$output_dir" "$report_dir"
-
-          python "$implementation/render.py" \
-            --input "$implementation/examples/demo.csv" \
-            --data-manifest "$implementation/examples/demo-data.json" \
-            --figure-contract "$contract" \
-            --output-dir "$output_dir" \
-            --run-mode smoke \
-            --value-mode proportion \
-            --facet-order "Day 0,Day 7" \
-            --category-order "Alpha,Beta,Gamma,Other" \
-            --formats "svg,pdf,png" \
-            --width-mm 183 \
-            --height-mm 105 \
-            --dpi 300
-
-          python skills/sci-plot/scripts/validate_contract.py \
-            "$contract" \
-            --stage final \
-            --pretty > "$report_dir/contract.json"
-
-          python skills/sci-plot/scripts/validate_delivery.py \
-            --contract "$contract" \
-            --manifest "$output_dir/composition.manifest.json" \
-            --artifact-dir "$output_dir" \
-            --pretty \
-            --output "$report_dir/delivery.json"
-
-          python skills/sci-plot/scripts/inspect_artifacts.py \
-            "$output_dir/composition.svg" \
-            "$output_dir/composition.pdf" \
-            "$output_dir/composition.png" \
-            --width-mm 183 \
-            --height-mm 105 \
-            --dpi 300 \
-            --require-svg-text \
-            --strict \
-            --pretty \
-            --output "$report_dir/artifacts.json"
-
-          python skills/sci-plot/scripts/build_qa_report.py \
-            "$report_dir/contract.json" \
-            "$report_dir/delivery.json" \
-            "$output_dir/data-validation.json" \
-            "$report_dir/artifacts.json" \
-            --pretty \
-            --output "$report_dir/qa.json"
-
-          python - "$report_dir/qa.json" <<'PY'
-          import json
-          import sys
-          from pathlib import Path
-
-          report = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
-          non_pass = [
-              check
-              for check in report.get("checks", [])
-              if check.get("status") != "PASS"
+          rows = [
+              json.loads(line)
+              for line in (root / "references/cases/case-index.jsonl")
+              .read_text(encoding="utf-8")
+              .splitlines()
+              if line.strip()
           ]
-          assert report.get("status") == "PASS", report
-          assert not non_pass, non_pass
+          open_rows = [row for row in rows if row["releaseTier"] == "open-template"]
+          atlas_rows = [row for row in rows if row["releaseTier"] == "atlas"]
+          assert (len(rows), len(open_rows), len(atlas_rows)) == (180, 23, 157)
+
+          atlas_assets = set()
+          for row in rows:
+              for preview in row["previews"]:
+                  asset = root / preview["asset"]
+                  assert asset.is_file() and asset.stat().st_size > 0, asset
+                  atlas_assets.add(asset)
+          assert len(atlas_assets) == 436
+
+          for row in open_rows:
+              assert row["openImplementation"] == {"python": True, "r": True}
+              template = root / row["templatePath"]
+              assert template.is_dir(), template
+              assert (template / "README.md").is_file()
+              assert len(list((template / "python").glob("*.py"))) == 1
+              assert len(list((template / "r").glob("*.R"))) == 1
+              demo_files = [
+                  path
+                  for folder in ("data", "demo")
+                  for path in (template / folder).glob("*")
+                  if path.is_file() and path.stat().st_size > 0
+              ]
+              assert demo_files, template
+              for language in ("python", "r"):
+                  preview = (
+                      root
+                      / "assets/open-templates"
+                      / row["id"]
+                      / f"preview-{language}.png"
+                  )
+                  assert preview.is_file() and preview.read_bytes()[:8] == b"\x89PNG\r\n\x1a\n"
+
+          for source in root.rglob("*.py"):
+              ast.parse(source.read_text(encoding="utf-8"), filename=str(source))
+
+          link_pattern = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
+          for readme in root.rglob("README.md"):
+              for target in link_pattern.findall(readme.read_text(encoding="utf-8")):
+                  target = target.strip().split("#", 1)[0]
+                  if not target or "://" in target or target.startswith("#"):
+                      continue
+                  assert (readme.parent / target).resolve().exists(), (readme, target)
+
+          forbidden = (
+              "/" + "Users/",
+              "/" + "Volumes/",
+              "private/" + "generated-code",
+              "科研图形库/" + "private",
+              "file" + "://",
+          )
+          text_suffixes = {".md", ".py", ".R", ".r", ".json", ".jsonl", ".yaml", ".yml", ".csv", ".txt"}
+          for path in root.rglob("*"):
+              assert not path.is_symlink(), path
+              assert path.name not in {".DS_Store", "__pycache__", ".Rhistory", ".RData"}, path
+              if path.is_file() and path.suffix in text_suffixes:
+                  text = path.read_text(encoding="utf-8", errors="replace")
+                  assert not any(value in text for value in forbidden), path
+
           print(
               json.dumps(
-                  {"status": report["status"], "summary": report["summary"]},
+                  {
+                      "records": len(rows),
+                      "open_templates": len(open_rows),
+                      "atlas_only": len(atlas_rows),
+                      "atlas_assets": len(atlas_assets),
+                      "open_previews": len(open_rows) * 2,
+                  },
                   indent=2,
               )
           )
           PY
+
+      - name: Parse all R template sources
+        run: |
+          find skills/academic-figure/templates -type f -name '*.R' \
+            -exec Rscript --vanilla -e 'parse(file=commandArgs(TRUE)[1])' {} \;
+
+      - name: Smoke-test case search
+        run: |
+          python skills/academic-figure/scripts/search_cases.py \
+            "生存 风险表" --open-only --language python --limit 3

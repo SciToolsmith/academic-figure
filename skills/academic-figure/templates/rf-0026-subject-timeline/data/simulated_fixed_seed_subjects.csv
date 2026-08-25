@@ -1,0 +1,19 @@
+subject_id,subject_label,display_order,observation_start,observation_end,time_unit,data_status,simulation_seed
+S-01,Object 01,1,0,35.9,weeks,SIMULATED,26
+S-02,Object 02 — extended label,2,0,19.0,weeks,SIMULATED,26
+S-03,Object 03,3,0,38.3,weeks,SIMULATED,26
+S-04,Object 04,4,0,32.3,weeks,SIMULATED,26
+S-05,Object 05 — long descriptor,5,0,25.0,weeks,SIMULATED,26
+S-06,Object 06,6,0,37.6,weeks,SIMULATED,26
+S-07,Object 07,7,0,40.6,weeks,SIMULATED,26
+S-08,Object 08,8,0,35.1,weeks,SIMULATED,26
+S-09,Object 09 — extended label,9,0,31.0,weeks,SIMULATED,26
+S-10,Object 10,10,0,20.3,weeks,SIMULATED,26
+S-11,Object 11,11,0,36.3,weeks,SIMULATED,26
+S-12,Object 12,12,0,18.8,weeks,SIMULATED,26
+S-13,Object 13 — long descriptor,13,0,29.4,weeks,SIMULATED,26
+S-14,Object 14,14,0,28.3,weeks,SIMULATED,26
+S-15,Object 15,15,0,34.3,weeks,SIMULATED,26
+S-16,Object 16,16,0,31.1,weeks,SIMULATED,26
+S-17,Object 17 — extended label,17,0,32.3,weeks,SIMULATED,26
+S-18,Object 18,18,0,35.6,weeks,SIMULATED,26

@@ -1,0 +1,31 @@
+sample_id,sample_label,display_order,measure_alpha,measure_beta,category_primary,category_secondary,flag_alpha,flag_beta,data_status,simulation_seed
+S-022,Object 22,22,58.5,,Class A,Tier 3,No,Absent,SIMULATED,63
+S-024,Object 24,24,75.9,16.4,Class C,Tier 1,No,Absent,SIMULATED,63
+S-025,Object 25,25,34.5,35.1,Class A,Tier 3,Yes,Present,SIMULATED,63
+S-021,Object 21,21,41.0,44.6,Class A,Tier 2,No,Absent,SIMULATED,63
+S-017,Object 17,17,69.1,9.7,,Tier 4,Yes,Present,SIMULATED,63
+S-019,Object 19,19,26.7,28.0,Class C,,Yes,Present,SIMULATED,63
+S-010,Object 10,10,88.7,25.7,Class A,Tier 1,Yes,Present,SIMULATED,63
+S-008,Object 08,8,79.4,40.2,Class A,Tier 1,Yes,Present,SIMULATED,63
+S-013,Object 13,13,,13.6,Class A,Tier 3,Yes,Present,SIMULATED,63
+S-023,Object 23,23,32.5,36.8,Class A,Tier 2,No,Absent,SIMULATED,63
+S-007,Object 07,7,60.2,43.3,Class B,Tier 4,Yes,Present,SIMULATED,63
+S-002,Object 02,2,54.9,19.3,Class B,Tier 1,Yes,Absent,SIMULATED,63
+S-003,Object 03,3,30.9,39.0,Class B,Tier 4,Yes,Present,SIMULATED,63
+S-029,Object 29,29,40.7,34.4,Class C,Tier 3,No,Present,SIMULATED,63
+S-016,Object 16,16,52.9,31.9,Class C,Tier 4,No,,SIMULATED,63
+S-011,Object 11,11,84.7,,Class A,Tier 1,No,Absent,SIMULATED,63
+S-012,Object 12,12,24.6,14.9,Class C,Tier 2,Yes,Present,SIMULATED,63
+S-009,Object 09,9,24.2,38.0,Class A,Tier 2,Yes,Absent,SIMULATED,63
+S-026,Object 26,26,,23.8,Class C,Tier 4,Yes,Absent,SIMULATED,63
+S-030,Object 30,30,33.6,14.0,Class C,Tier 3,No,Absent,SIMULATED,63
+S-006,Object 06,6,45.3,36.8,Class A,Tier 3,Yes,Absent,SIMULATED,63
+S-015,Object 15,15,61.1,41.7,Class A,Tier 1,Yes,Present,SIMULATED,63
+S-004,Object 04,4,33.6,25.5,Class A,Tier 4,No,Absent,SIMULATED,63
+S-018,Object 18,18,52.6,37.5,Class B,Tier 1,Yes,Absent,SIMULATED,63
+S-001,Object 01,1,38.2,44.7,Class C,Tier 4,Yes,Absent,SIMULATED,63
+S-028,Object 28,28,32.6,30.8,Class A,Tier 2,,Absent,SIMULATED,63
+S-020,Object 20,20,28.1,15.9,Class B,Tier 3,Yes,Absent,SIMULATED,63
+S-005,Object 05,5,48.6,9.0,Class C,Tier 4,No,Present,SIMULATED,63
+S-027,Object 27,27,28.6,36.6,Class C,Tier 4,Yes,Absent,SIMULATED,63
+S-014,Object 14,14,47.6,8.3,Class C,Tier 2,,Present,SIMULATED,63

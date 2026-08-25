@@ -1,0 +1,17 @@
+node_id,parent_id,label,value,color_group,order,source_type,source_seed
+root,,All observations,,,1,simulated,66
+branch_a,root,Branch A,,A,1,simulated,66
+a1,branch_a,A · Type 1,18,A,1,simulated,66
+a2,branch_a,A · Type 2,12,A,2,simulated,66
+a3,branch_a,A · Type 3,8,A,3,simulated,66
+branch_b,root,Branch B,,B,2,simulated,66
+b1,branch_b,B · Type 1,15,B,1,simulated,66
+b2,branch_b,B · Type 2,10,B,2,simulated,66
+b3,branch_b,B · Type 3,7,B,3,simulated,66
+branch_c,root,Branch C,,C,3,simulated,66
+c1,branch_c,C · Family 1,,C,1,simulated,66
+c11,c1,C · Type 1,9,C,1,simulated,66
+c12,c1,C · Type 2,6,C,2,simulated,66
+c2,branch_c,C · Family 2,,C,2,simulated,66
+c21,c2,C · Type 3,8,C,1,simulated,66
+c22,c2,C · Type 4,5,C,2,simulated,66

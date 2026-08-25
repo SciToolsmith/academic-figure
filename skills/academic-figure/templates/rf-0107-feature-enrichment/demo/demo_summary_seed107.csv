@@ -1,0 +1,3 @@
+curve_id,enrichment_score,p_value,adjusted_p_value,hit_count,data_status,simulation_seed
+Collection A,0.287,0.031,0.084,14,SIMULATED,107
+Collection B,-0.241,0.072,0.143,14,SIMULATED,107

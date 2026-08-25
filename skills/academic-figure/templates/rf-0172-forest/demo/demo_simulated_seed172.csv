@@ -1,0 +1,21 @@
+label,estimate,ci_low,ci_high,panel,section,series,metric,null_value,p_value,n,data_status,simulation_seed
+Comparison A,0.260,-0.011,0.530,Additive effects,Primary comparisons,Specification 1,difference,0,0.0597944,180,SIMULATED,172
+Comparison A,0.384,0.128,0.640,Additive effects,Primary comparisons,Specification 2,difference,0,0.00332794,203,SIMULATED,172
+Comparison B,-0.205,-0.423,0.012,Additive effects,Primary comparisons,Specification 1,difference,0,0.0646184,217,SIMULATED,172
+Comparison B,-0.143,-0.426,0.141,Additive effects,Primary comparisons,Specification 2,difference,0,0.325257,240,SIMULATED,172
+Comparison C,-0.005,-0.171,0.162,Additive effects,Primary comparisons,Specification 1,difference,0,0.954933,254,SIMULATED,172
+Comparison C,0.113,-0.163,0.389,Additive effects,Primary comparisons,Specification 2,difference,0,0.422091,277,SIMULATED,172
+Comparison D,0.390,0.175,0.606,Additive effects,Sensitivity checks,Specification 1,difference,0,0.000388577,291,SIMULATED,172
+Comparison D,0.495,0.210,0.780,Additive effects,Sensitivity checks,Specification 2,difference,0,0.000658286,314,SIMULATED,172
+Comparison E,-0.318,-0.536,-0.101,Additive effects,Sensitivity checks,Specification 1,difference,0,0.00414499,328,SIMULATED,172
+Comparison E,-0.217,-0.422,-0.012,Additive effects,Sensitivity checks,Specification 2,difference,0,0.0383736,351,SIMULATED,172
+Outcome A,0.767,0.606,0.969,Ratio effects,Overall estimates,Specification 1,ratio,1,0.0264121,260,SIMULATED,172
+Outcome A,0.830,0.663,1.040,Ratio effects,Overall estimates,Specification 2,ratio,1,0.104677,289,SIMULATED,172
+Outcome B,1.155,0.942,1.417,Ratio effects,Overall estimates,Specification 1,ratio,1,0.165945,301,SIMULATED,172
+Outcome B,1.225,0.995,1.507,Ratio effects,Overall estimates,Specification 2,ratio,1,0.0552547,330,SIMULATED,172
+Outcome C,0.893,0.733,1.088,Ratio effects,Overall estimates,Specification 1,ratio,1,0.261414,342,SIMULATED,172
+Outcome C,0.969,0.831,1.130,Ratio effects,Overall estimates,Specification 2,ratio,1,0.686526,371,SIMULATED,172
+Subgroup 1,1.333,1.090,1.629,Ratio effects,Subgroup estimates,Specification 1,ratio,1,0.00504239,383,SIMULATED,172
+Subgroup 1,1.504,1.225,1.847,Ratio effects,Subgroup estimates,Specification 2,ratio,1,0.0000996785,412,SIMULATED,172
+Subgroup 2,0.655,0.542,0.792,Ratio effects,Subgroup estimates,Specification 1,ratio,1,0.0000129642,424,SIMULATED,172
+Subgroup 2,0.707,0.599,0.835,Ratio effects,Subgroup estimates,Specification 2,ratio,1,0.0000433227,453,SIMULATED,172

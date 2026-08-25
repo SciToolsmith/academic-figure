@@ -1,0 +1,6 @@
+variable,label,type,levels,summary,decimals
+measure_1,Measure 1,continuous,,median_iqr,2
+measure_2,Measure 2,continuous,,mean_sd,1
+category_1,Category 1,categorical,Level A|Level B|Level C,n_percent_nonmissing,0
+binary_flag,Binary flag,categorical,No|Yes,n_percent_nonmissing,0
+score,Score,continuous,,mean_sd,2

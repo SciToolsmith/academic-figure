@@ -1,0 +1,4 @@
+event_type,event_type_label,marker,color
+checkpoint,Checkpoint,circle,#228833
+milestone,Milestone,diamond,#AA3377
+closure,Recorded end,cross,#000000

@@ -1,0 +1,8 @@
+metric,label,direction,display,digits,scale_min,scale_max
+accuracy,Primary score,higher,percent,1,0,1
+robustness,Robustness score,higher,decimal,2,0,10
+error_rate,Error rate,lower,percent,2,0,0.2
+runtime_index,Runtime index,lower,decimal,1,0,100
+resource_units,Resource use,lower,integer,0,0,500
+coverage,Coverage,higher,percent,1,0,1
+deviation,Deviation,lower,scientific,2,0,0.01
