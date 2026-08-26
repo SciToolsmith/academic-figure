@@ -150,21 +150,19 @@ python skills/academic-figure/scripts/search_cases.py \
 
 ## 联系与反馈
 
-如果你在科研图形复现、论文实验复现或 `academic-figure` 使用过程中需要交流，可以通过小红书联系：
+如果你在科研图形复现、论文实验复现或 `academic-figure` 使用过程中需要交流，可以通过小红书联系。
 
-- 小红书昵称：胡同学
-- 小红书号：
+**胡同学 · 小红书号**（点击代码块右上角即可复制）
 
 ```text
 5015520728
 ```
 
-<details>
-<summary>查看小红书名片与二维码</summary>
+<a href="assets/contact/xiaohongshu-card.jpg">
+  <img src="assets/contact/xiaohongshu-card.jpg" alt="胡同学的小红书名片与二维码" width="260">
+</a>
 
-[![胡同学的小红书名片](assets/contact/xiaohongshu-card.jpg)](assets/contact/xiaohongshu-card.jpg)
-
-</details>
+<sub>扫描二维码联系，或点击名片查看原图。</sub>
 
 ## English
 
