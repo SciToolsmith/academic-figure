@@ -22,6 +22,53 @@
 
 </div>
 
+<p align="center"><sub>CURATED FIGURE ATLAS · SELECT BY EVIDENCE, NOT APPEARANCE</sub></p>
+
+<h2 align="center">让研究问题，先找到合适的图</h2>
+
+<p align="center">
+  不是把漂亮图形堆在一起，而是按研究目标、数据结构和证据关系建立可检索索引。
+</p>
+
+<p align="center">
+  <a href="https://scifigures.hihu.me/charts/rf-0176-t-lymphocyte-subtype-umap?lang=python">
+    <img src="skills/academic-figure/assets/case-atlas/rf-0176-t-lymphocyte-subtype-umap/plot-python-bae3a12fa2.webp" width="100%" alt="高维结构与群体组成图鉴案例">
+  </a>
+</p>
+
+<p align="center">
+  <sub>01 · HIGH-DIMENSIONAL STRUCTURE</sub><br>
+  <strong>高维结构与群体组成</strong><br>
+  <sub>从二维嵌入、类别构成与标签密度中判断结构是否被清楚表达。</sub>
+</p>
+
+<table role="presentation">
+  <tr>
+    <td width="50%" align="center">
+      <a href="https://scifigures.hihu.me/charts/rf-0179-two-group-joint-density-marginal-histograms?lang=python"><img src="skills/academic-figure/assets/case-atlas/rf-0179-two-group-joint-density-marginal-histograms/plot-python-bae3a12fa2.webp" alt="联合分布与边缘密度图鉴案例"></a>
+    </td>
+    <td width="50%" align="center">
+      <a href="https://scifigures.hihu.me/charts/rf-0177-inward-circular-bar-chart?lang=python"><img src="skills/academic-figure/assets/case-atlas/rf-0177-inward-circular-bar-chart/plot-python-bae3a12fa2.webp" alt="环形编码与分组比较图鉴案例"></a>
+    </td>
+  </tr>
+  <tr>
+    <td align="center"><sub>02 · RELATIONSHIPS</sub><br><strong>联合分布与边缘密度</strong><br><sub>比较位置、离散、重叠与变量关系。</sub></td>
+    <td align="center"><sub>03 · COMPOSITION</sub><br><strong>环形编码与分组比较</strong><br><sub>在高类别数下组织规模、排序与组成。</sub></td>
+  </tr>
+</table>
+
+<p align="center">
+  <code>180 个图鉴案例</code> · <code>23 个开放模板</code> · <code>46 份 Python/R 实现</code><br><br>
+  <a href="https://scifigures.hihu.me/"><strong>进入可检索图鉴 ↗</strong></a>
+  &nbsp;·&nbsp;
+  <a href="GALLERY.md#open-templates"><strong>查看开放模板</strong></a>
+</p>
+
+<details>
+<summary><strong>展开查看 6 个开放模板的 Python / R 实际输出</strong></summary>
+
+<br>
+
 <table role="presentation">
   <tr>
     <td width="33%"><a href="skills/academic-figure/templates/rf-0104-raincloud/README.md"><img src="skills/academic-figure/assets/open-templates/rf-0104/preview-r.png" alt="分布与原始观测 R 开放模板实际预览"></a></td>
@@ -45,10 +92,7 @@
   </tr>
 </table>
 
-<p align="center">
-  <strong>180 个图鉴案例 · 23 个开放模板 · 46 份 Python/R 实现</strong><br>
-  <sub>README 只展示六个代表模板；完整案例按九类表达目标收录在科研图形图鉴中。</sub>
-</p>
+</details>
 
 ## 从科学问题到可复现图形
 
