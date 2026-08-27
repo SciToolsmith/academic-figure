@@ -22,46 +22,21 @@
 
 </div>
 
-<p align="center"><sub>CURATED FIGURE ATLAS · SELECT BY EVIDENCE, NOT APPEARANCE</sub></p>
-
-<h2 align="center">让研究问题，先找到合适的图</h2>
-
 <p align="center">
-  不是把漂亮图形堆在一起，而是按研究目标、数据结构和证据关系建立可检索索引。
+  <strong>从研究问题出发，找到真正适合数据的表达结构</strong><br>
+  <sub>180 个可检索案例，覆盖差异、效应、不确定性与变量关系等常见科研表达。</sub>
 </p>
 
 <p align="center">
-  <a href="https://scifigures.hihu.me/charts/rf-0176-t-lymphocyte-subtype-umap?lang=python">
-    <img src="skills/academic-figure/assets/case-atlas/rf-0176-t-lymphocyte-subtype-umap/plot-python-bae3a12fa2.webp" width="100%" alt="高维结构与群体组成图鉴案例">
-  </a>
+  <a href="https://scifigures.hihu.me/charts/rf-0107-volcano-preranked-gsea-enrichment-scores?lang=python"><img src="skills/academic-figure/assets/case-atlas/rf-0107-volcano-preranked-gsea-enrichment-scores/kras-volcano-preranked-gsea-2b780eed45.webp" width="32%" alt="差异分析与富集结果案例"></a>
+  <a href="https://scifigures.hihu.me/charts/rf-0180-kinematic-age-velocity-asymmetric-uncertainty?lang=python"><img src="skills/academic-figure/assets/case-atlas/rf-0180-kinematic-age-velocity-asymmetric-uncertainty/plot-python-bae3a12fa2.webp" width="32%" alt="效应与不确定性案例"></a>
+  <a href="https://scifigures.hihu.me/charts/rf-0114-differential-gene-fold-change-scatter?lang=python"><img src="skills/academic-figure/assets/case-atlas/rf-0114-differential-gene-fold-change-scatter/fc-fc-kras-erk-science-a6dcca5606.webp" width="32%" alt="变量关系与模型案例"></a>
 </p>
 
 <p align="center">
-  <sub>01 · HIGH-DIMENSIONAL STRUCTURE</sub><br>
-  <strong>高维结构与群体组成</strong><br>
-  <sub>从二维嵌入、类别构成与标签密度中判断结构是否被清楚表达。</sub>
-</p>
-
-<table role="presentation">
-  <tr>
-    <td width="50%" align="center">
-      <a href="https://scifigures.hihu.me/charts/rf-0179-two-group-joint-density-marginal-histograms?lang=python"><img src="skills/academic-figure/assets/case-atlas/rf-0179-two-group-joint-density-marginal-histograms/plot-python-bae3a12fa2.webp" alt="联合分布与边缘密度图鉴案例"></a>
-    </td>
-    <td width="50%" align="center">
-      <a href="https://scifigures.hihu.me/charts/rf-0177-inward-circular-bar-chart?lang=python"><img src="skills/academic-figure/assets/case-atlas/rf-0177-inward-circular-bar-chart/plot-python-bae3a12fa2.webp" alt="环形编码与分组比较图鉴案例"></a>
-    </td>
-  </tr>
-  <tr>
-    <td align="center"><sub>02 · RELATIONSHIPS</sub><br><strong>联合分布与边缘密度</strong><br><sub>比较位置、离散、重叠与变量关系。</sub></td>
-    <td align="center"><sub>03 · COMPOSITION</sub><br><strong>环形编码与分组比较</strong><br><sub>在高类别数下组织规模、排序与组成。</sub></td>
-  </tr>
-</table>
-
-<p align="center">
-  <code>180 个图鉴案例</code> · <code>23 个开放模板</code> · <code>46 份 Python/R 实现</code><br><br>
-  <a href="https://scifigures.hihu.me/"><strong>进入可检索图鉴 ↗</strong></a>
-  &nbsp;·&nbsp;
-  <a href="GALLERY.md#open-templates"><strong>查看开放模板</strong></a>
+  <a href="https://scifigures.hihu.me/"><strong>浏览完整图鉴 ↗</strong></a>
+  &nbsp;&nbsp;·&nbsp;&nbsp;
+  <a href="GALLERY.md#open-templates">查看 23 个开放模板</a>
 </p>
 
 <details>
