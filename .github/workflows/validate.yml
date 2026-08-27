@@ -174,7 +174,7 @@ jobs:
           assert all(case_id in gallery for case_id in case_ids)
 
           readme = Path("README.md").read_text(encoding="utf-8")
-          assert readme.count('src="skills/academic-figure/assets/open-templates/') == 6
+          assert readme.count('src="skills/academic-figure/assets/case-atlas/') == 9
           print("root documentation: valid")
           PY
 
