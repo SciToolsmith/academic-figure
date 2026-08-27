@@ -34,40 +34,22 @@
 </p>
 
 <p align="center">
+  <a href="https://scifigures.hihu.me/charts/rf-0179-two-group-joint-density-marginal-histograms?lang=python"><img src="skills/academic-figure/assets/case-atlas/rf-0179-two-group-joint-density-marginal-histograms/plot-python-bae3a12fa2.webp" width="32%" alt="联合分布与边缘密度案例"></a>
+  <a href="https://scifigures.hihu.me/charts/rf-0042-marker-gene-heatmap?lang=python"><img src="skills/academic-figure/assets/case-atlas/rf-0042-marker-gene-heatmap/marker-gene-heatmap-86e91c0bc7.webp" width="32%" alt="标记基因热图案例"></a>
+  <a href="https://scifigures.hihu.me/charts/rf-0066-sunburst-chart?lang=python"><img src="skills/academic-figure/assets/case-atlas/rf-0066-sunburst-chart/sunburst-chart-8ad82cb30c.webp" width="32%" alt="层级结构案例"></a>
+</p>
+
+<p align="center">
+  <a href="https://scifigures.hihu.me/charts/rf-0130-faceted-ridgeline-plot?lang=python"><img src="skills/academic-figure/assets/case-atlas/rf-0130-faceted-ridgeline-plot/ridgeline-facets-ddbfb48bd7.webp" width="32%" alt="分面山脊分布案例"></a>
+  <a href="https://scifigures.hihu.me/charts/rf-0139-multi-panel-time-series-plots?lang=python"><img src="skills/academic-figure/assets/case-atlas/rf-0139-multi-panel-time-series-plots/temporal-atlas-python-4c2ac1dbed.webp" width="32%" alt="多面板时间序列案例"></a>
+  <a href="https://scifigures.hihu.me/charts/rf-0173-paired-boxplots?lang=python"><img src="skills/academic-figure/assets/case-atlas/rf-0173-paired-boxplots/plot-python-bae3a12fa2.webp" width="32%" alt="配对观测与箱线图案例"></a>
+</p>
+
+<p align="center">
   <a href="https://scifigures.hihu.me/"><strong>浏览完整图鉴 ↗</strong></a>
   &nbsp;&nbsp;·&nbsp;&nbsp;
   <a href="GALLERY.md#open-templates">查看 23 个开放模板</a>
 </p>
-
-<details>
-<summary><strong>展开查看 6 个开放模板的 Python / R 实际输出</strong></summary>
-
-<br>
-
-<table role="presentation">
-  <tr>
-    <td width="33%"><a href="skills/academic-figure/templates/rf-0104-raincloud/README.md"><img src="skills/academic-figure/assets/open-templates/rf-0104/preview-r.png" alt="分布与原始观测 R 开放模板实际预览"></a></td>
-    <td width="33%"><a href="skills/academic-figure/templates/rf-0172-forest/README.md"><img src="skills/academic-figure/assets/open-templates/rf-0172/preview-r.png" alt="效应量与置信区间 R 开放模板实际预览"></a></td>
-    <td width="33%"><a href="skills/academic-figure/templates/rf-0100-regression-diagnostics/README.md"><img src="skills/academic-figure/assets/open-templates/rf-0100/preview-python.png" alt="变量关系与模型诊断 Python 开放模板实际预览"></a></td>
-  </tr>
-  <tr>
-    <td><code>rf-0104</code><br><strong>分布与原始观测</strong><br><sub>R 实际输出</sub></td>
-    <td><code>rf-0172</code><br><strong>效应量与不确定性</strong><br><sub>R 实际输出</sub></td>
-    <td><code>rf-0100</code><br><strong>关系与模型诊断</strong><br><sub>Python 实际输出</sub></td>
-  </tr>
-  <tr>
-    <td width="33%"><a href="skills/academic-figure/templates/rf-0054-clustered-matrix-enrichment/README.md"><img src="skills/academic-figure/assets/open-templates/rf-0054/preview-r.png" alt="高维矩阵与模块注释 R 开放模板实际预览"></a></td>
-    <td width="33%"><a href="skills/academic-figure/templates/rf-0118-sankey/README.md"><img src="skills/academic-figure/assets/open-templates/rf-0118/preview-r.png" alt="流向与结构 R 开放模板实际预览"></a></td>
-    <td width="33%"><a href="skills/academic-figure/templates/rf-0018-survival-risk-table/README.md"><img src="skills/academic-figure/assets/open-templates/rf-0018/preview-python.png" alt="时间、生存与风险表 Python 开放模板实际预览"></a></td>
-  </tr>
-  <tr>
-    <td><code>rf-0054</code><br><strong>高维矩阵与模块</strong><br><sub>R 实际输出</sub></td>
-    <td><code>rf-0118</code><br><strong>流向与结构</strong><br><sub>R 实际输出</sub></td>
-    <td><code>rf-0018</code><br><strong>时间、生存与风险</strong><br><sub>Python 实际输出</sub></td>
-  </tr>
-</table>
-
-</details>
 
 ## 从科学问题到可复现图形
 
